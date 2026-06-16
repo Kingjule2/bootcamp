@@ -29,6 +29,7 @@
                 <div class="stat-value">{{ $stats['rejected_today'] }}</div>
                 <div class="stat-label">Ditolak Hari Ini</div>
             </div>
+        </div>
     </div>
 
     {{-- Review Queue Table --}}

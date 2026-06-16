@@ -21,17 +21,24 @@ Route::middleware(['auth'])->group(function () {
     // Panel 1: Dapur / Katering Mitra
     Route::prefix('dapur')->middleware('role:dapur')->group(function () {
         Route::get('/', fn () => view('dapur.dashboard'))->name('dapur.dashboard');
+        Route::get('/produksi', fn () => view('dapur.produksi'))->name('dapur.produksi');
+        Route::get('/pengiriman', fn () => view('dapur.pengiriman'))->name('dapur.pengiriman');
     });
 
     // Panel 2: Ahli Gizi / Verifikator
     Route::prefix('gizi')->middleware('role:ahli_gizi')->group(function () {
         Route::get('/', fn () => view('gizi.dashboard'))->name('gizi.dashboard');
+        Route::get('/riwayat', fn () => view('gizi.riwayat'))->name('gizi.riwayat');
     });
 
-    // Panel 3: Sekolah & Driver
+    // Panel 3: Sekolah & Driver (Kurir)
     Route::prefix('sekolah')->middleware('role:sekolah')->group(function () {
         Route::get('/', fn () => view('sekolah.dashboard'))->name('sekolah.dashboard');
         Route::post('/sync-offline', [App\Http\Controllers\OfflineSyncController::class, 'syncOffline']);
+    });
+
+    Route::prefix('kurir')->middleware('role:kurir')->group(function () {
+        Route::get('/', fn () => view('kurir.dashboard'))->name('kurir.dashboard');
     });
 
     // Panel 4: Admin Dinas
