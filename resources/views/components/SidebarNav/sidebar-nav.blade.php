@@ -13,22 +13,22 @@
         <div class="sidebar-section-title">Menu Utama</div>
 
         @if(auth()->user()->isDapur())
-            <a href="{{ route('dapur.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.*') ? 'active' : '' }}">
+            <a href="{{ route('dapur.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}">
                 <span class="nav-icon">📋</span> Input Menu
             </a>
-            <a href="{{ route('dapur.dashboard') }}" class="sidebar-nav-item">
+            <a href="{{ route('dapur.produksi') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.produksi') ? 'active' : '' }}">
                 <span class="nav-icon">🍳</span> Produksi
             </a>
-            <a href="{{ route('dapur.dashboard') }}" class="sidebar-nav-item">
+            <a href="{{ route('dapur.pengiriman') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.pengiriman') ? 'active' : '' }}">
                 <span class="nav-icon">🚚</span> Pengiriman
             </a>
         @endif
 
         @if(auth()->user()->isAhliGizi())
-            <a href="{{ route('gizi.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('gizi.*') ? 'active' : '' }}">
+            <a href="{{ route('gizi.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('gizi.dashboard') ? 'active' : '' }}">
                 <span class="nav-icon">📊</span> Review Antrean
             </a>
-            <a href="{{ route('gizi.dashboard') }}" class="sidebar-nav-item">
+            <a href="{{ route('gizi.riwayat') }}" class="sidebar-nav-item {{ request()->routeIs('gizi.riwayat') ? 'active' : '' }}">
                 <span class="nav-icon">✅</span> Riwayat Verifikasi
             </a>
         @endif
@@ -51,6 +51,12 @@
             </a>
             <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item">
                 <span class="nav-icon">⚙️</span> Manajemen User
+            </a>
+        @endif
+
+        @if(auth()->user()->role === 'kurir')
+            <a href="{{ route('kurir.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('kurir.*') ? 'active' : '' }}">
+                <span class="nav-icon">🚚</span> Tugas Saya
             </a>
         @endif
     </nav>
