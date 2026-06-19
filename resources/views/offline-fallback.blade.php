@@ -49,14 +49,13 @@
 </head>
 <body>
     <div class="container">
-        <div class="icon">📡</div>
         <h1>Tidak Ada Koneksi Internet</h1>
         <p>
             NutriRoute membutuhkan koneksi internet untuk menyinkronkan data pengiriman.
             Silakan periksa koneksi Anda dan coba lagi.
         </p>
         <a href="/" class="retry-btn" onclick="window.location.reload(); return false;">
-            🔄 Coba Lagi
+            Coba Lagi
         </a>
     </div>
 </body>

@@ -5,11 +5,98 @@ namespace App\Livewire\Admin;
 use App\Models\LaporanSekolah;
 use App\Models\Menu;
 use App\Models\Pengiriman;
+use App\Models\User;
+use App\Models\Sekolah;
+use App\Models\AhliGizi;
+use App\Models\Kurir;
 use Carbon\Carbon;
 use Livewire\Component;
+use Livewire\Attributes\Url;
 
 class AdminDashboard extends Component
 {
+    #[Url]
+    public $tab = 'monitoring';
+
+    // Properties for creating user
+    public $newUsername = '';
+    public $newPassword = '';
+    public $newRole = '';
+    public $newNamaEntitas = '';
+
+    protected $validationAttributes = [
+        'newUsername' => 'Username',
+        'newPassword' => 'Password',
+        'newRole' => 'Role',
+        'newNamaEntitas' => 'Nama Instansi/Entitas',
+    ];
+
+    public function createUser()
+    {
+        $this->validate([
+            'newUsername' => 'required|string|min:4|unique:users,username',
+            'newPassword' => 'required|string|min:6',
+            'newRole' => 'required|in:dapur,ahli_gizi,sekolah,admin,kurir',
+            'newNamaEntitas' => 'required|string|min:4',
+        ]);
+
+        $user = User::create([
+            'username' => $this->newUsername,
+            'password' => $this->newPassword, // Hashes automatically via casts in User model
+            'role' => $this->newRole,
+            'nama_entitas' => $this->newNamaEntitas,
+        ]);
+
+        // Create child metadata record if applicable
+        if ($user->role === 'sekolah') {
+            Sekolah::create([
+                'id_users' => $user->id_users,
+                'NIS' => rand(100000, 999999),
+                'jumlah_siswa' => 0,
+                'no_telp' => 0,
+            ]);
+        } elseif ($user->role === 'ahli_gizi') {
+            AhliGizi::create([
+                'id_users' => $user->id_users,
+                'no_str' => '-',
+                'spesialisasi' => 'Gizi Anak & Remaja',
+                'min_kalori' => 0,
+                'max_kalori' => 0,
+                'min_protein' => 0,
+                'max_karbohidrat' => 0,
+                'max_lemak' => 0,
+                'status_menu' => 'Approve',
+                'catatan' => '-',
+            ]);
+        } elseif ($user->role === 'kurir') {
+            Kurir::create([
+                'id_users' => $user->id_users,
+                'no_telp' => '-',
+                'plat_nomor' => '-',
+                'jenis_kendaraan' => '-',
+                'status_tugas' => 'Standby',
+            ]);
+        }
+
+        $this->reset(['newUsername', 'newPassword', 'newRole', 'newNamaEntitas']);
+
+        session()->flash('message', 'Pengguna baru berhasil dibuat!');
+    }
+
+    public function deleteUser($userId)
+    {
+        if ($userId === auth()->id()) {
+            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri!');
+            return;
+        }
+
+        $user = User::find($userId);
+        if ($user) {
+            $user->delete();
+            session()->flash('message', 'Pengguna berhasil dihapus!');
+        }
+    }
+
     public function render()
     {
         // All pengiriman for monitoring table
@@ -71,6 +158,12 @@ class AdminDashboard extends Component
             'totalPengiriman' => $allPengiriman->count(),
         ];
 
-        return view('livewire.admin.admin-dashboard', compact('allPengiriman', 'stats', 'chartData'));
+        // Fetch users list if on user management tab
+        $users = [];
+        if ($this->tab === 'users') {
+            $users = User::latest()->get();
+        }
+
+        return view('livewire.admin.admin-dashboard', compact('allPengiriman', 'stats', 'chartData', 'users'));
     }
 }

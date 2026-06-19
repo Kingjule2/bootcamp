@@ -8,7 +8,7 @@
 
     {{-- Header --}}
     <div style="margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem;">📍 Status Pengiriman Hari Ini</h2>
+        <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem;">Status Pengiriman Hari Ini</h2>
         <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin: 0;">{{ auth()->user()->nama_entitas }}</p>
     </div>
 
@@ -23,16 +23,16 @@
                             {{ $p->menu->nama_menu }}
                         </div>
                         <div style="font-size: 0.75rem; color: var(--color-text-muted); display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                            <span>🏭 {{ $p->menu->dapur->nama_entitas }}</span>
-                            <span>📦 {{ $p->menu->porsi_rencana }} porsi</span>
+                            <span>Dapur: {{ $p->menu->dapur->nama_entitas }}</span>
+                            <span>{{ $p->menu->porsi_rencana }} porsi</span>
                         </div>
                     </div>
                     @if($p->status_logistik === 'Sedang Dimasak')
-                        <span class="badge badge-cooking">🍳 Dimasak</span>
+                        <span class="badge badge-cooking">Dimasak</span>
                     @elseif($p->status_logistik === 'Dalam Perjalanan')
-                        <span class="badge badge-transit">🚚 Dalam Perjalanan</span>
+                        <span class="badge badge-transit">Dalam Perjalanan</span>
                     @else
-                        <span class="badge badge-received">✅ Diterima</span>
+                        <span class="badge badge-received">Diterima</span>
                     @endif
                 </div>
             </div>
@@ -60,11 +60,11 @@
             @if($p->laporanSekolah && !($showLaporanForm && $selectedPengirimanId === $p->id))
                 <div style="padding: 0 1.25rem 1.25rem;">
                     <div style="background: var(--color-surface); border-radius: 0.75rem; padding: 1rem; border: 1px solid var(--color-border);">
-                        <div style="font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.5rem;">📊 Laporan Kualitas</div>
+                        <div style="font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.5rem;">Laporan Kualitas</div>
                         <div style="display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.8125rem;">
-                            <span>📦 {{ $p->laporanSekolah->porsi_diterima }} porsi diterima</span>
-                            <span>🗑️ {{ $p->laporanSekolah->food_waste }} sisa</span>
-                            <span>⭐ {{ $p->laporanSekolah->rating }}/5</span>
+                            <span>Diterima: {{ $p->laporanSekolah->porsi_diterima }} porsi</span>
+                            <span>Sisa (Waste): {{ $p->laporanSekolah->food_waste }}</span>
+                            <span>Rating: {{ $p->laporanSekolah->rating }}/5</span>
                         </div>
                         @if($p->laporanSekolah->komentar)
                             <div style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-text-secondary); font-style: italic;">
@@ -77,7 +77,6 @@
         </div>
     @empty
         <div class="card" style="padding: 3rem; text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📍</div>
             <p style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text-primary); margin: 0;">Belum Ada Pengiriman</p>
             <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin: 0.25rem 0 0;">Pengiriman akan muncul setelah dapur mengirim makanan ke sekolah Anda.</p>
         </div>

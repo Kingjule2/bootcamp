@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class DapurDashboard extends Component
 {
-    public $namaKurir = '';
+    public $id_kurir = '';
     public $showKirimModal = false;
     public $selectedMenuId = null;
 
@@ -22,29 +22,29 @@ class DapurDashboard extends Component
     public function confirmKirim()
     {
         $this->validate([
-            'namaKurir' => 'required|string|min:3|max:100',
+            'id_kurir' => 'required|exists:kurir,id_kurir',
         ]);
 
-        $menu = Menu::where('id', $this->selectedMenuId)
+        $menu = Menu::where('id_menus', $this->selectedMenuId)
             ->where('dapur_id', auth()->id())
             ->where('status', 'Ready to Cook')
             ->firstOrFail();
 
         Pengiriman::create([
-            'menu_id' => $menu->id,
-            'nama_kurir' => $this->namaKurir,
+            'id_menus' => $menu->id_menus,
+            'id_kurir' => $this->id_kurir,
             'status_logistik' => 'Dalam Perjalanan',
             'dispatched_at' => now(),
             'device_info' => request()->userAgent(),
         ]);
 
-        $this->reset(['namaKurir', 'showKirimModal', 'selectedMenuId']);
+        $this->reset(['id_kurir', 'showKirimModal', 'selectedMenuId']);
         session()->flash('success', 'Makanan berhasil dikirim! Kurir sedang dalam perjalanan.');
     }
 
     public function cancelKirim()
     {
-        $this->reset(['namaKurir', 'showKirimModal', 'selectedMenuId']);
+        $this->reset(['id_kurir', 'showKirimModal', 'selectedMenuId']);
     }
 
     public function render()
@@ -61,6 +61,8 @@ class DapurDashboard extends Component
             'rejected' => $menus->where('status', 'Rejected')->count(),
         ];
 
-        return view('livewire.dapur.dapur-dashboard', compact('menus', 'stats'));
+        $kurirList = \App\Models\Kurir::with('user')->get();
+
+        return view('livewire.dapur.dapur-dashboard', compact('menus', 'stats', 'kurirList'));
     }
 }

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Login ke NutriRoute — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
+    <meta name="description" content="Login ke FDLY — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
     <meta name="theme-color" content="#059669">
-    <title>Login — NutriRoute</title>
+    <title>Login — FDLY</title>
 
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.bunny.net">

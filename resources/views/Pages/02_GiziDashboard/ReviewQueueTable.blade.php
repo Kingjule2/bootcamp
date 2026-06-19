@@ -34,7 +34,7 @@
                     <td style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $menu->created_at->format('H:i') }}</td>
                     <td style="text-align: center;">
                         <x-components.shared.button wire:click="openVerifikasi({{ $menu->id }})" variant="primary" style="font-size: 0.75rem; padding: 0.375rem 0.75rem;">
-                            🔍 Review
+                            Review
                         </x-components.shared.button>
                     </td>
                 </tr>
@@ -43,7 +43,6 @@
     </table>
 @else
     <div style="padding: 3rem; text-align: center; color: var(--color-text-muted);">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
         <p style="margin: 0; font-weight: 500;">Semua menu sudah diverifikasi!</p>
         <p style="margin: 0.25rem 0 0; font-size: 0.8125rem;">Tidak ada antrean pending saat ini.</p>
     </div>

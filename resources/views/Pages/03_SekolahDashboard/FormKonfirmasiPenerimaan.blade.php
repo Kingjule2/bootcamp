@@ -52,13 +52,12 @@
             style="width: 100%;" 
             @click="handleConfirm()"
         >
-            📬 Konfirmasi Makanan Diterima
+            Konfirmasi Makanan Diterima
         </x-components.shared.button>
     </template>
     
     <template x-if="isLocallyReceived">
         <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1rem; margin-top: 0.75rem; text-align: center;">
-            <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">⏳</div>
             <div style="font-size: 0.8125rem; font-weight: 700; color: #92400e;">Penerimaan Terekam (Offline)</div>
             <div style="font-size: 0.75rem; color: #b45309;">Menunggu jaringan internet untuk sinkronisasi.</div>
         </div>

@@ -1,11 +1,8 @@
 <aside class="sidebar" :class="{ open: sidebarOpen }" id="sidebar-nav">
     {{-- Brand --}}
-    <div class="sidebar-brand">
-        <div class="sidebar-brand-icon">🍱</div>
-        <div>
-            <div class="sidebar-brand-text">NutriRoute</div>
-            <div style="font-size: 0.65rem; opacity: 0.6; letter-spacing: 0.05em;">SISTEM MBG</div>
-        </div>
+    <div class="sidebar-brand" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+        <img src="/assets/images/logo-fdly.png" alt="FDLY" style="height: 32px; width: auto; filter: brightness(0) invert(1);">
+        <div style="font-size: 0.65rem; opacity: 0.6; letter-spacing: 0.05em; color: white; padding-left: 2px;">SISTEM MBG</div>
     </div>
 
     {{-- Navigation --}}
@@ -14,49 +11,49 @@
 
         @if(auth()->user()->isDapur())
             <a href="{{ route('dapur.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}">
-                <span class="nav-icon">📋</span> Input Menu
+                <span class="nav-icon"></span> Input Menu
             </a>
             <a href="{{ route('dapur.produksi') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.produksi') ? 'active' : '' }}">
-                <span class="nav-icon">🍳</span> Produksi
+                <span class="nav-icon"></span> Produksi
             </a>
             <a href="{{ route('dapur.pengiriman') }}" class="sidebar-nav-item {{ request()->routeIs('dapur.pengiriman') ? 'active' : '' }}">
-                <span class="nav-icon">🚚</span> Pengiriman
+                <span class="nav-icon"></span> Pengiriman
             </a>
         @endif
 
         @if(auth()->user()->isAhliGizi())
             <a href="{{ route('gizi.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('gizi.dashboard') ? 'active' : '' }}">
-                <span class="nav-icon">📊</span> Review Antrean
+                <span class="nav-icon"></span> Review Antrean
             </a>
             <a href="{{ route('gizi.riwayat') }}" class="sidebar-nav-item {{ request()->routeIs('gizi.riwayat') ? 'active' : '' }}">
-                <span class="nav-icon">✅</span> Riwayat Verifikasi
+                <span class="nav-icon"></span> Riwayat Verifikasi
             </a>
         @endif
 
         @if(auth()->user()->isSekolah())
             <a href="{{ route('sekolah.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('sekolah.*') ? 'active' : '' }}">
-                <span class="nav-icon">📍</span> Status Pengiriman
+                <span class="nav-icon"></span> Status Pengiriman
             </a>
             <a href="{{ route('sekolah.dashboard') }}" class="sidebar-nav-item">
-                <span class="nav-icon">📝</span> Laporan Harian
+                <span class="nav-icon"></span> Laporan Harian
             </a>
         @endif
 
         @if(auth()->user()->isAdmin())
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') ? 'active' : '' }}">
-                <span class="nav-icon">📡</span> Monitoring Live
+            <a href="{{ route('admin.dashboard', ['tab' => 'monitoring']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && (request('tab') === 'monitoring' || !request('tab')) ? 'active' : '' }}">
+                <span class="nav-icon"></span> Monitoring Live
             </a>
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item">
-                <span class="nav-icon">📈</span> Statistik
+            <a href="{{ route('admin.dashboard', ['tab' => 'statistik']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && request('tab') === 'statistik' ? 'active' : '' }}">
+                <span class="nav-icon"></span> Statistik
             </a>
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item">
-                <span class="nav-icon">⚙️</span> Manajemen User
+            <a href="{{ route('admin.dashboard', ['tab' => 'users']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && request('tab') === 'users' ? 'active' : '' }}">
+                <span class="nav-icon"></span> User Management
             </a>
         @endif
 
-        @if(auth()->user()->role === 'kurir')
+        @if(auth()->user()->isKurir())
             <a href="{{ route('kurir.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('kurir.*') ? 'active' : '' }}">
-                <span class="nav-icon">🚚</span> Tugas Saya
+                <span class="nav-icon"></span> Tugas Pengiriman
             </a>
         @endif
     </nav>
@@ -77,8 +74,8 @@
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" title="Keluar" style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.1rem; padding: 0.25rem;" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
-                    🚪
+                <button type="submit" title="Keluar" style="background: none; border: 1px solid rgba(255,255,255,0.25); border-radius: 0.375rem; color: rgba(255,255,255,0.75); cursor: pointer; font-size: 0.75rem; padding: 0.25rem 0.5rem; font-weight: 500;" onmouseover="this.style.color='#f87171'; this.style.borderColor='#f87171';" onmouseout="this.style.color='rgba(255,255,255,0.75)'; this.style.borderColor='rgba(255,255,255,0.25)';">
+                    Keluar
                 </button>
             </form>
         </div>

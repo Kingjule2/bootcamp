@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Login ke NutriRoute — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
+    <meta name="description" content="Login ke FDLY — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
     <meta name="theme-color" content="#059669">
-    <title>Login — NutriRoute</title>
+    <title>Login — FDLY</title>
 
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,7 +13,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body style="margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #059669 0%, #047857 40%, #2C3E50 100%); padding: 1rem;">
+<body style="margin: 0; min-height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #059669 0%, #047857 40%, #2C3E50 100%); padding: 2.5rem 1rem; box-sizing: border-box;">
 
     {{-- Decorative shapes --}}
     <div style="position: fixed; top: -15%; right: -10%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none;"></div>

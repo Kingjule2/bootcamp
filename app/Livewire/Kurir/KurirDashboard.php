@@ -9,10 +9,10 @@ class KurirDashboard extends Component
 {
     public function render()
     {
-        // Get deliveries assigned to this kurir
-        // Note: Currently nama_kurir is stored as string.
-        // We'll match it with the user's nama_entitas.
-        $pengirimans = Pengiriman::where('nama_kurir', auth()->user()->nama_entitas)
+        // Get the courier record for the logged-in user
+        $kurir = auth()->user()->kurir;
+
+        $pengirimans = Pengiriman::where('id_kurir', $kurir?->id_kurir ?? 0)
             ->whereIn('status_logistik', ['Dalam Perjalanan', 'Diterima'])
             ->with(['menu.dapur', 'menu.targetSekolah'])
             ->latest()

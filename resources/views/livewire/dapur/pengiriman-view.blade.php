@@ -2,14 +2,13 @@
     {{-- Flash Message --}}
     @if(session('success'))
         <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
-            <span>✅</span>
             <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">{{ session('success') }}</span>
         </div>
     @endif
 
     <div class="card">
         <div class="card-header">
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">🚚 Manajemen Pengiriman</h3>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Manajemen Pengiriman</h3>
         </div>
         <div class="card-body" style="padding: 0;">
             @forelse($pengirimans as $p)
@@ -20,18 +19,17 @@
                                 {{ $p->menu->nama_menu }}
                             </div>
                             <div style="font-size: 0.8125rem; color: var(--color-text-muted); display: flex; gap: 0.85rem; flex-wrap: wrap;">
-                                <span>🏫 {{ $p->menu->targetSekolah->nama_entitas }}</span>
-                                <span>📦 {{ $p->menu->porsi_rencana }} porsi</span>
+                                <span>Sekolah: {{ $p->menu->targetSekolah->nama_entitas }}</span>
+                                <span>Porsi: {{ $p->menu->porsi_rencana }} porsi</span>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                             @if($p->status_logistik === 'Sedang Dimasak')
-                                <button wire:click="kirimMakanan({{ $p->id }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-                                    🚚 Kirim Makanan
+                                <button wire:click="kirimMakanan({{ $p->id_pengiriman }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+                                    Kirim Makanan
                                 </button>
                             @else
                                 <span class="badge badge-{{ $p->status_logistik === 'Diterima' ? 'received' : 'transit' }}">
-                                    {{ $p->status_logistik === 'Dalam Perjalanan' ? '🚚' : '📬' }}
                                     {{ $p->status_logistik }}
                                 </span>
                             @endif
@@ -40,7 +38,7 @@
 
                     @if($p->dispatched_at)
                         <div style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--color-text-muted);">
-                            🚚 Kurir: <strong>{{ $p->nama_kurir }}</strong> &middot; Berangkat: {{ $p->dispatched_at->format('H:i') }} WIB
+                            Kurir: <strong>{{ $p->nama_kurir }}</strong> &middot; Berangkat: {{ $p->dispatched_at->format('H:i') }} WIB
                             @if($p->received_at)
                                 &middot; Diterima: {{ $p->received_at->format('H:i') }} WIB
                             @endif
@@ -49,7 +47,6 @@
                 </div>
             @empty
                 <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
                     <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada antrean pengiriman.</p>
                 </div>
             @endforelse
@@ -65,17 +62,22 @@
         <!-- Modal Content -->
         <div style="position: relative; background: white; width: 100%; max-width: 24rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); overflow: hidden; animation: slideUp 0.3s ease-out;">
             <div style="padding: 1.5rem; border-bottom: 1px solid var(--color-border);">
-                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700; color: var(--color-text-primary);">🚚 Dispatch Pengiriman</h3>
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700; color: var(--color-text-primary);">Dispatch Pengiriman</h3>
             </div>
             
             <div style="padding: 1.5rem;">
                 <div class="form-group">
-                    <label class="form-label">Nama Kurir Bertugas</label>
-                    <input type="text" class="form-control" wire:model="namaKurir" placeholder="Contoh: Budi Santoso" style="width: 100%;" autofocus>
-                    @error('namaKurir') <span style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                    <label class="form-label">Kurir Bertugas</label>
+                    <select class="form-input" wire:model="id_kurir" style="width: 100%;">
+                        <option value="">— Pilih Kurir —</option>
+                        @foreach($kurirList as $kurir)
+                            <option value="{{ $kurir->id_kurir }}">{{ $kurir->user->nama_entitas }} ({{ $kurir->plat_nomor }})</option>
+                        @endforeach
+                    </select>
+                    @error('id_kurir') <span style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 1rem; background: #f8fafc; padding: 0.75rem; border-radius: 0.5rem;">
-                    💡 Pastikan nama kurir sesuai identitas agar mudah dilacak oleh pihak sekolah.
+                    💡 Pilih kurir terdaftar untuk kemudahan pelacakan pengiriman oleh pihak sekolah.
                 </div>
             </div>
             

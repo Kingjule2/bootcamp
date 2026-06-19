@@ -6,28 +6,27 @@
                     {{ $menu->nama_menu }}
                 </div>
                 <div style="font-size: 0.75rem; color: var(--color-text-muted); display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                    <span>🏫 {{ $menu->targetSekolah->nama_entitas }}</span>
-                    <span>🔥 {{ $menu->kalori }} kkal</span>
-                    <span>💪 {{ $menu->protein }}g protein</span>
-                    <span>📦 {{ $menu->porsi_rencana }} porsi</span>
+                    <span>Sekolah: {{ $menu->targetSekolah->nama_entitas }}</span>
+                    <span>Kalori: {{ $menu->kalori }} kkal</span>
+                    <span>Protein: {{ $menu->protein }}g</span>
+                    <span>Porsi: {{ $menu->porsi_rencana }}</span>
                 </div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                 @if($menu->status === 'Pending Verification')
-                    <span class="badge badge-pending">⏳ Pending</span>
+                    <span class="badge badge-pending">Pending</span>
                 @elseif($menu->status === 'Ready to Cook')
-                    <span class="badge badge-approved">✅ Ready to Cook</span>
+                    <span class="badge badge-approved">Ready to Cook</span>
                 @elseif($menu->status === 'Rejected')
-                    <span class="badge badge-rejected">❌ Ditolak</span>
+                    <span class="badge badge-rejected">Ditolak</span>
                 @endif
 
                 @if($menu->status === 'Ready to Cook' && !$menu->pengiriman)
                     <x-components.shared.button wire:click="kirimMakanan({{ $menu->id }})" variant="primary" style="font-size: 0.75rem; padding: 0.4rem 0.875rem;">
-                        🚚 KIRIM MAKANAN
+                        KIRIM MAKANAN
                     </x-components.shared.button>
                 @elseif($menu->pengiriman)
                     <span class="badge badge-{{ $menu->pengiriman->status_logistik === 'Diterima' ? 'received' : 'transit' }}">
-                        {{ $menu->pengiriman->status_logistik === 'Dalam Perjalanan' ? '🚚' : '📬' }}
                         {{ $menu->pengiriman->status_logistik }}
                     </span>
                 @endif
@@ -43,7 +42,7 @@
 
         @if($menu->pengiriman && $menu->pengiriman->dispatched_at)
             <div style="margin-top: 0.5rem; font-size: 0.6875rem; color: var(--color-text-muted);">
-                🚚 Kurir: {{ $menu->pengiriman->nama_kurir }} · Berangkat: {{ $menu->pengiriman->dispatched_at->format('H:i') }} WIB
+                Kurir: {{ $menu->pengiriman->nama_kurir }} · Berangkat: {{ $menu->pengiriman->dispatched_at->format('H:i') }} WIB
                 @if($menu->pengiriman->received_at)
                     · Diterima: {{ $menu->pengiriman->received_at->format('H:i') }} WIB
                 @endif
@@ -52,7 +51,6 @@
     </div>
 @empty
     <div style="padding: 3rem; text-align: center; color: var(--color-text-muted);">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📋</div>
         <p style="margin: 0;">Belum ada menu yang diajukan hari ini.</p>
     </div>
 @endforelse

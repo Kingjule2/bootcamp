@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('laporan_sekolah', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pengiriman_id')->constrained('pengiriman')->cascadeOnDelete();
+            $table->id('id_laporan_sekolah');
+            $table->foreignId('pengiriman_id')->constrained('pengiriman', 'id_pengiriman')->cascadeOnDelete();
             $table->unsignedInteger('porsi_diterima')->comment('Jumlah fisik kotak layak konsumsi');
             $table->unsignedInteger('food_waste')->default(0)->comment('Sisa porsi tidak termakan');
             $table->unsignedTinyInteger('rating')->comment('Kepuasan kualitas 1-5');

@@ -50,6 +50,7 @@ class AuthController extends Controller
             'ahli_gizi' => redirect('/gizi'),
             'sekolah' => redirect('/sekolah'),
             'admin' => redirect('/admin'),
+            'kurir' => redirect('/kurir'),
             default => redirect('/login'),
         };
     }

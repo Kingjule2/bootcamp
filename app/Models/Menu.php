@@ -5,35 +5,58 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Menu extends Model
 {
+    protected $primaryKey = 'id_menus';
+
     protected $fillable = [
         'dapur_id',
-        'target_sekolah_id',
+        'id_sekolah',
         'nama_menu',
         'kalori',
         'protein',
+        'karbohidrat',
+        'lemak',
         'porsi_rencana',
         'status',
         'catatan_gizi',
+        'id_ahli_gizi',
     ];
 
     // ── Relationships ──
 
     public function dapur(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'dapur_id');
+        return $this->belongsTo(User::class, 'dapur_id', 'id_users');
     }
 
-    public function targetSekolah(): BelongsTo
+    public function sekolah(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'target_sekolah_id');
+        return $this->belongsTo(Sekolah::class, 'id_sekolah', 'id_sekolah');
+    }
+
+    public function targetSekolah(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            Sekolah::class,
+            'id_sekolah', // Foreign key on Sekolah (intermediate)
+            'id_users',   // Foreign key on User (related)
+            'id_sekolah', // Local key on Menu
+            'id_users'    // Local key on Sekolah
+        );
+    }
+
+    public function ahliGizi(): BelongsTo
+    {
+        return $this->belongsTo(AhliGizi::class, 'id_ahli_gizi', 'id_ahli_gizi');
     }
 
     public function pengiriman(): HasOne
     {
-        return $this->hasOne(Pengiriman::class);
+        return $this->hasOne(Pengiriman::class, 'id_menus', 'id_menus');
     }
 
     // ── Status Helpers ──

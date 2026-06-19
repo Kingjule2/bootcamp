@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LaporanSekolah extends Model
 {
     protected $table = 'laporan_sekolah';
+    protected $primaryKey = 'id_laporan_sekolah';
 
     protected $fillable = [
         'pengiriman_id',
@@ -22,7 +23,7 @@ class LaporanSekolah extends Model
 
     public function pengiriman(): BelongsTo
     {
-        return $this->belongsTo(Pengiriman::class);
+        return $this->belongsTo(Pengiriman::class, 'pengiriman_id', 'id_pengiriman');
     }
 
     // ── Helpers ──

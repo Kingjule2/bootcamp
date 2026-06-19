@@ -60,7 +60,6 @@
 >
     <template x-if="isLocallyReported">
         <div style="background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 0.75rem; padding: 1rem; text-align: center;">
-            <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">📝</div>
             <div style="font-size: 0.8125rem; font-weight: 700; color: #0369a1;">Laporan Kualitas Tersimpan (Offline)</div>
             <div style="font-size: 0.75rem; color: #0284c7;">Akan terkirim otomatis saat online.</div>
         </div>
@@ -68,7 +67,7 @@
     
     <template x-if="!isLocallyReported">
         <div style="background: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 1.25rem;">
-            <h4 style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 1rem; color: var(--color-primary-700);">📝 Laporan Kualitas Makanan</h4>
+            <h4 style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 1rem; color: var(--color-primary-700);">Laporan Kualitas Makanan</h4>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
@@ -89,12 +88,12 @@
                         <button
                             type="button"
                             @click="rating = i"
-                            style="background: none; border: none; font-size: 2rem; cursor: pointer; padding: 0.25rem; transition: transform 0.15s;"
-                            :style="rating >= i ? 'filter: none;' : 'filter: grayscale(100%); opacity: 0.3;'"
+                            style="background: none; border: none; font-size: 2rem; cursor: pointer; padding: 0.25rem; transition: transform 0.15s; color: #f59e0b;"
+                            :style="rating >= i ? 'opacity: 1;' : 'opacity: 0.3;'"
                             onmouseover="this.style.transform='scale(1.2)'"
                             onmouseout="this.style.transform='scale(1)'"
                         >
-                            ⭐
+                            ★
                         </button>
                     </template>
                 </div>
@@ -106,7 +105,7 @@
             </div>
 
             <x-components.shared.button type="button" variant="primary" style="width: 100%;" @click="submitReport()">
-                📤 Kirim Laporan
+                Kirim Laporan
             </x-components.shared.button>
         </div>
     </template>
