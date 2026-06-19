@@ -10,15 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Pengiriman extends Model
 {
     protected $table = 'pengiriman';
+    protected $primaryKey = 'id_pengiriman';
 
     protected $fillable = [
-        'menu_id',
-        'nama_kurir',
+        'id_menus',
         'status_logistik',
         'dispatched_at',
         'received_at',
         'is_synced',
         'device_info',
+        'id_kurir',
     ];
 
     protected function casts(): array
@@ -34,12 +35,17 @@ class Pengiriman extends Model
 
     public function menu(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(Menu::class, 'id_menus', 'id_menus');
     }
 
     public function laporanSekolah(): HasOne
     {
-        return $this->hasOne(LaporanSekolah::class);
+        return $this->hasOne(LaporanSekolah::class, 'pengiriman_id', 'id_pengiriman');
+    }
+
+    public function kurir(): BelongsTo
+    {
+        return $this->belongsTo(Kurir::class, 'id_kurir', 'id_kurir');
     }
 
     // ── Status Helpers ──

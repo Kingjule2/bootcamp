@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class PengirimanView extends Component
 {
-    public $namaKurir = '';
+    public $selectedKurirId = '';
     public $showKirimModal = false;
     public $selectedPengirimanId = null;
 
@@ -21,29 +21,33 @@ class PengirimanView extends Component
     public function confirmKirim()
     {
         $this->validate([
-            'namaKurir' => 'required|string|min:3|max:100',
+            'selectedKurirId' => 'required|exists:kurir,id_kurir',
         ]);
 
-        $pengiriman = Pengiriman::where('id', $this->selectedPengirimanId)
+        $pengiriman = Pengiriman::where('id_pengiriman', $this->selectedPengirimanId)
             ->whereHas('menu', function($q) {
                 $q->where('dapur_id', auth()->id());
             })
             ->firstOrFail();
 
         $pengiriman->update([
-            'nama_kurir' => $this->namaKurir,
+            'id_kurir' => $this->selectedKurirId,
             'status_logistik' => 'Dalam Perjalanan',
             'dispatched_at' => now(),
             'device_info' => request()->userAgent(),
         ]);
 
-        $this->reset(['namaKurir', 'showKirimModal', 'selectedPengirimanId']);
+        \App\Models\Kurir::where('id_kurir', $this->selectedKurirId)->update([
+            'status_tugas' => 'On Delivery'
+        ]);
+
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedPengirimanId']);
         session()->flash('success', 'Makanan berhasil dikirim! Kurir sedang dalam perjalanan.');
     }
 
     public function cancelKirim()
     {
-        $this->reset(['namaKurir', 'showKirimModal', 'selectedPengirimanId']);
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedPengirimanId']);
     }
 
     public function render()
@@ -56,6 +60,8 @@ class PengirimanView extends Component
             ->latest()
             ->get();
 
-        return view('livewire.dapur.pengiriman-view', compact('pengirimans'));
+        $kurirs = \App\Models\Kurir::with('user')->get();
+
+        return view('livewire.dapur.pengiriman-view', compact('pengirimans', 'kurirs'));
     }
 }

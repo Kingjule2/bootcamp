@@ -50,14 +50,25 @@
             @endif
 
             {{-- Quality Report Form (shows after confirmation) --}}
-            @if($showLaporanForm && $selectedPengirimanId === $p->id)
+            @if($showLaporanForm && $selectedPengirimanId === $p->id_pengiriman)
                 <div style="padding: 0 1.25rem 1.25rem; animation: slideIn 0.3s ease;">
                     @include('Pages.03_SekolahDashboard.FoodWasteReport')
                 </div>
             @endif
 
+            {{-- Quality Report Button (for "Diterima" status but no report yet) --}}
+            @if($p->status_logistik === 'Diterima' && !$p->laporanSekolah)
+                @if(!($showLaporanForm && $selectedPengirimanId === $p->id_pengiriman))
+                    <div style="padding: 0 1.25rem 1.25rem;">
+                        <button wire:click="$set('selectedPengirimanId', {{ $p->id_pengiriman }}); $set('showLaporanForm', true); $set('porsi_diterima', {{ $p->menu->porsi_rencana }});" class="btn" style="background: var(--color-primary-600); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; width: 100%; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='var(--color-primary-700)'" onmouseout="this.style.background='var(--color-primary-600)'">
+                            📝 Isi Laporan Kualitas Makanan
+                        </button>
+                    </div>
+                @endif
+            @endif
+
             {{-- Existing Report Display --}}
-            @if($p->laporanSekolah && !($showLaporanForm && $selectedPengirimanId === $p->id))
+            @if($p->laporanSekolah && !($showLaporanForm && $selectedPengirimanId === $p->id_pengiriman))
                 <div style="padding: 0 1.25rem 1.25rem;">
                     <div style="background: var(--color-surface); border-radius: 0.75rem; padding: 1rem; border: 1px solid var(--color-border);">
                         <div style="font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.5rem;">📊 Laporan Kualitas</div>

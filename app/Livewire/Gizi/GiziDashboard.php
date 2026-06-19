@@ -26,6 +26,7 @@ class GiziDashboard extends Component
         $menu->update([
             'status' => 'Ready to Cook',
             'catatan_gizi' => null,
+            'id_ahli_gizi' => auth()->user()->ahliGizi->id_ahli_gizi ?? $menu->id_ahli_gizi,
         ]);
 
         $this->closeModal();
@@ -50,6 +51,7 @@ class GiziDashboard extends Component
         $menu->update([
             'status' => 'Rejected',
             'catatan_gizi' => $this->catatan_gizi,
+            'id_ahli_gizi' => auth()->user()->ahliGizi->id_ahli_gizi ?? $menu->id_ahli_gizi,
         ]);
 
         $this->closeModal();

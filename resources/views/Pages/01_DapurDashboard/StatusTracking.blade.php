@@ -22,7 +22,7 @@
                 @endif
 
                 @if($menu->status === 'Ready to Cook' && !$menu->pengiriman)
-                    <x-components.shared.button wire:click="kirimMakanan({{ $menu->id }})" variant="primary" style="font-size: 0.75rem; padding: 0.4rem 0.875rem;">
+                    <x-components.shared.button wire:click="kirimMakanan({{ $menu->id_menus }})" variant="primary" style="font-size: 0.75rem; padding: 0.4rem 0.875rem;">
                         🚚 KIRIM MAKANAN
                     </x-components.shared.button>
                 @elseif($menu->pengiriman)
@@ -43,7 +43,7 @@
 
         @if($menu->pengiriman && $menu->pengiriman->dispatched_at)
             <div style="margin-top: 0.5rem; font-size: 0.6875rem; color: var(--color-text-muted);">
-                🚚 Kurir: {{ $menu->pengiriman->nama_kurir }} · Berangkat: {{ $menu->pengiriman->dispatched_at->format('H:i') }} WIB
+                🚚 Kurir: {{ $menu->pengiriman->kurir?->user?->nama_entitas ?? '-' }} · Berangkat: {{ $menu->pengiriman->dispatched_at->format('H:i') }} WIB
                 @if($menu->pengiriman->received_at)
                     · Diterima: {{ $menu->pengiriman->received_at->format('H:i') }} WIB
                 @endif

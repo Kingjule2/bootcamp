@@ -33,7 +33,7 @@
                     <td style="font-size: 0.8125rem;">{{ $menu->targetSekolah->nama_entitas }}</td>
                     <td style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $menu->created_at->format('H:i') }}</td>
                     <td style="text-align: center;">
-                        <x-components.shared.button wire:click="openVerifikasi({{ $menu->id }})" variant="primary" style="font-size: 0.75rem; padding: 0.375rem 0.75rem;">
+                        <x-components.shared.button wire:click="openVerifikasi({{ $menu->id_menus }})" variant="primary" style="font-size: 0.75rem; padding: 0.375rem 0.75rem;">
                             🔍 Review
                         </x-components.shared.button>
                     </td>

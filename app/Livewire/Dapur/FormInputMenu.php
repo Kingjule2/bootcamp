@@ -12,7 +12,7 @@ class FormInputMenu extends Component
     public $kalori = '';
     public $protein = '';
     public $porsi_rencana = '';
-    public $target_sekolah_id = '';
+    public $id_sekolah = '';
 
     protected function rules()
     {
@@ -21,7 +21,7 @@ class FormInputMenu extends Component
             'kalori' => 'required|integer|min:400|max:1500',
             'protein' => 'required|integer|min:10|max:100',
             'porsi_rencana' => 'required|integer|min:1|max:5000',
-            'target_sekolah_id' => 'required|exists:users,id',
+            'id_sekolah' => 'required|exists:sekolah,id_sekolah',
         ];
     }
 
@@ -31,7 +31,7 @@ class FormInputMenu extends Component
             'nama_menu.min' => 'Deskripsi menu minimal 10 karakter (contoh: Nasi Putih, Ayam Goreng, Sayur Bayam).',
             'kalori.min' => 'Estimasi kalori minimum 400 kkal sesuai standar gizi.',
             'protein.min' => 'Estimasi protein minimum 10 gram sesuai standar gizi.',
-            'target_sekolah_id.exists' => 'Sekolah tujuan tidak valid.',
+            'id_sekolah.exists' => 'Sekolah tujuan tidak valid.',
         ];
     }
 
@@ -41,15 +41,18 @@ class FormInputMenu extends Component
 
         Menu::create([
             'dapur_id' => auth()->id(),
-            'target_sekolah_id' => $this->target_sekolah_id,
+            'id_sekolah' => $this->id_sekolah,
             'nama_menu' => $this->nama_menu,
             'kalori' => $this->kalori,
             'protein' => $this->protein,
             'porsi_rencana' => $this->porsi_rencana,
             'status' => 'Pending Verification',
+            'karbohidrat' => 50, // default placeholder
+            'lemak' => 10, // default placeholder
+            'id_ahli_gizi' => \App\Models\AhliGizi::value('id_ahli_gizi') ?? 1,
         ]);
 
-        $this->reset(['nama_menu', 'kalori', 'protein', 'porsi_rencana', 'target_sekolah_id']);
+        $this->reset(['nama_menu', 'kalori', 'protein', 'porsi_rencana', 'id_sekolah']);
         session()->flash('menu-success', 'Menu berhasil diajukan! Menunggu verifikasi ahli gizi.');
 
         $this->dispatch('menu-created');
@@ -57,7 +60,7 @@ class FormInputMenu extends Component
 
     public function render()
     {
-        $sekolahList = User::where('role', 'sekolah')->orderBy('nama_entitas')->get();
+        $sekolahList = \App\Models\Sekolah::with('user')->get();
 
         return view('livewire.dapur.form-input-menu', compact('sekolahList'));
     }

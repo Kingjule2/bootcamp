@@ -53,14 +53,14 @@
                     max="5000" 
                 />
                 <div class="form-group">
-                    <label for="target_sekolah_id" class="form-label">Sekolah Tujuan</label>
-                    <select wire:model="target_sekolah_id" id="target_sekolah_id" class="form-input">
+                    <label for="id_sekolah" class="form-label">Sekolah Tujuan</label>
+                    <select wire:model="id_sekolah" id="id_sekolah" class="form-input">
                         <option value="">— Pilih Sekolah —</option>
                         @foreach($sekolahList as $sekolah)
-                            <option value="{{ $sekolah->id }}">{{ $sekolah->nama_entitas }}</option>
+                            <option value="{{ $sekolah->id_sekolah }}">{{ $sekolah->user->nama_entitas ?? '-' }}</option>
                         @endforeach
                     </select>
-                    @error('target_sekolah_id') <div class="form-error">{{ $message }}</div> @enderror
+                    @error('id_sekolah') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
             </div>
 

@@ -26,7 +26,7 @@
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                             @if($p->status_logistik === 'Sedang Dimasak')
-                                <button wire:click="kirimMakanan({{ $p->id }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+                                <button wire:click="kirimMakanan({{ $p->id_pengiriman }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
                                     🚚 Kirim Makanan
                                 </button>
                             @else
@@ -40,7 +40,7 @@
 
                     @if($p->dispatched_at)
                         <div style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--color-text-muted);">
-                            🚚 Kurir: <strong>{{ $p->nama_kurir }}</strong> &middot; Berangkat: {{ $p->dispatched_at->format('H:i') }} WIB
+                            🚚 Kurir: <strong>{{ $p->kurir?->user?->nama_entitas ?? '-' }}</strong> &middot; Berangkat: {{ $p->dispatched_at->format('H:i') }} WIB
                             @if($p->received_at)
                                 &middot; Diterima: {{ $p->received_at->format('H:i') }} WIB
                             @endif
@@ -70,12 +70,17 @@
             
             <div style="padding: 1.5rem;">
                 <div class="form-group">
-                    <label class="form-label">Nama Kurir Bertugas</label>
-                    <input type="text" class="form-control" wire:model="namaKurir" placeholder="Contoh: Budi Santoso" style="width: 100%;" autofocus>
-                    @error('namaKurir') <span style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                    <label class="form-label" style="font-weight: 500; font-size: 0.875rem; color: var(--color-text-primary); display: block; margin-bottom: 0.375rem;">Pilih Kurir Bertugas</label>
+                    <select class="form-control" wire:model="selectedKurirId" style="width: 100%; border-radius: 0.5rem; border: 1px solid var(--color-border); padding: 0.625rem 0.875rem; font-size: 0.875rem; background: var(--color-background-primary); color: var(--color-text-primary);" autofocus>
+                        <option value="">-- Pilih Kurir --</option>
+                        @foreach($kurirs as $kurir)
+                            <option value="{{ $kurir->id_kurir }}">{{ $kurir->user->nama_entitas }} ({{ $kurir->plat_nomor }})</option>
+                        @endforeach
+                    </select>
+                    @error('selectedKurirId') <span style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 1rem; background: #f8fafc; padding: 0.75rem; border-radius: 0.5rem;">
-                    💡 Pastikan nama kurir sesuai identitas agar mudah dilacak oleh pihak sekolah.
+                    💡 Pilih kurir bertugas agar data pengiriman dapat terverifikasi secara akurat.
                 </div>
             </div>
             

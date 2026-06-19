@@ -11,7 +11,7 @@
             window.addEventListener('offline', () => this.isOnline = false);
             // Check if this report was already submitted offline
             const pending = JSON.parse(localStorage.getItem('offline_deliveries') || '[]');
-            if (pending.some(item => item.pengiriman_id === {{ $p->id }} && item.type === 'report')) {
+            if (pending.some(item => item.pengiriman_id === {{ $p->id_pengiriman }} && item.type === 'report')) {
                 this.isLocallyReported = true;
             }
         },
@@ -32,9 +32,9 @@
                 const pending = JSON.parse(localStorage.getItem('offline_deliveries') || '[]');
                 
                 // Add to queue if not already reported
-                if (!pending.some(item => item.pengiriman_id === {{ $p->id }} && item.type === 'report')) {
+                if (!pending.some(item => item.pengiriman_id === {{ $p->id_pengiriman }} && item.type === 'report')) {
                     pending.push({
-                        pengiriman_id: {{ $p->id }},
+                        pengiriman_id: {{ $p->id_pengiriman }},
                         type: 'report',
                         porsi_diterima: parseInt(this.porsi_diterima),
                         food_waste: parseInt(this.food_waste || 0),

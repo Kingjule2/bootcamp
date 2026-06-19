@@ -10,7 +10,7 @@ class ProduksiView extends Component
 {
     public function mulaiMasak($menuId)
     {
-        $menu = Menu::where('id', $menuId)
+        $menu = Menu::where('id_menus', $menuId)
             ->where('dapur_id', auth()->id())
             ->where('status', 'Ready to Cook')
             ->firstOrFail();
@@ -18,8 +18,8 @@ class ProduksiView extends Component
         // Check if pengiriman already exists
         if (!$menu->pengiriman) {
             Pengiriman::create([
-                'menu_id' => $menu->id,
-                'nama_kurir' => '-', // Placeholder, will be updated during actual shipping
+                'id_menus' => $menu->id_menus,
+                'id_kurir' => null,
                 'status_logistik' => 'Sedang Dimasak',
             ]);
 

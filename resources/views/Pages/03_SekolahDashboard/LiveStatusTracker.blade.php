@@ -35,7 +35,7 @@
     <div style="background: var(--color-surface); border-radius: 0.75rem; padding: 0.875rem 1rem; margin-top: 0.75rem; display: flex; align-items: center; gap: 0.75rem;">
         <span style="font-size: 1.25rem;">🚚</span>
         <div>
-            <div style="font-size: 0.8125rem; font-weight: 600;">Kurir: {{ $p->nama_kurir }}</div>
+            <div style="font-size: 0.8125rem; font-weight: 600;">Kurir: {{ $p->kurir->user->nama_entitas ?? '-' }} ({{ $p->kurir->plat_nomor ?? '-' }})</div>
             <div style="font-size: 0.75rem; color: var(--color-text-muted);">
                 Jam Berangkat: {{ $p->dispatched_at->format('H:i') }} WIB
                 @if($p->received_at)

@@ -11,11 +11,15 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $primaryKey = 'id_users';
+
     protected $fillable = [
         'username',
         'password',
         'role',
         'nama_entitas',
+        'status_akun',
+        'email',
     ];
 
     protected $hidden = [
@@ -52,17 +56,44 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isKurir(): bool
+    {
+        return $this->role === 'kurir';
+    }
+
     // ── Relationships ──
+
+    public function sekolah(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Sekolah::class, 'id_users', 'id_users');
+    }
+
+    public function kurir(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Kurir::class, 'id_users', 'id_users');
+    }
+
+    public function ahliGizi(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(AhliGizi::class, 'id_users', 'id_users');
+    }
 
     /** Menus submitted by this dapur */
     public function menus(): HasMany
     {
-        return $this->hasMany(Menu::class, 'dapur_id');
+        return $this->hasMany(Menu::class, 'dapur_id', 'id_users');
     }
 
     /** Menus targeted at this sekolah */
-    public function targetMenus(): HasMany
+    public function targetMenus(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(Menu::class, 'target_sekolah_id');
+        return $this->hasManyThrough(
+            Menu::class,
+            Sekolah::class,
+            'id_users',       // Foreign key on sekolah table
+            'id_sekolah',     // Foreign key on menus table
+            'id_users',       // Local key on users table
+            'id_sekolah'      // Local key on sekolah table
+        );
     }
 }

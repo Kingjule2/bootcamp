@@ -1,4 +1,10 @@
 <div>
+    @if(session('success'))
+        <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
+            <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">{{ session('success') }}</span>
+        </div>
+    @endif
+
     {{-- Stats Row --}}
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
         <div class="stat-card">
@@ -52,6 +58,14 @@
                                 <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary-600);">🏫 {{ $p->menu->targetSekolah->nama_entitas }}</div>
                             </div>
                         </div>
+
+                        @if($p->status_logistik === 'Dalam Perjalanan')
+                            <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                                <button wire:click="tandaiDiterima({{ $p->id_pengiriman }})" class="btn" style="background: var(--color-primary-600); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: background 0.2s;" onmouseover="this.style.background='var(--color-primary-700)'" onmouseout="this.style.background='var(--color-primary-600)'">
+                                    ✅ Tandai Sudah Sampai / Diserahkan
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @empty
