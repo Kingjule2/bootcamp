@@ -40,14 +40,8 @@
         @endif
 
         @if(auth()->user()->isAdmin())
-            <a href="{{ route('admin.dashboard', ['tab' => 'monitoring']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && (request('tab') === 'monitoring' || !request('tab')) ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') ? 'active' : '' }}">
                 <span class="nav-icon"></span> Monitoring Live
-            </a>
-            <a href="{{ route('admin.dashboard', ['tab' => 'statistik']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && request('tab') === 'statistik' ? 'active' : '' }}">
-                <span class="nav-icon"></span> Statistik
-            </a>
-            <a href="{{ route('admin.dashboard', ['tab' => 'users']) }}" class="sidebar-nav-item {{ request()->routeIs('admin.*') && request('tab') === 'users' ? 'active' : '' }}">
-                <span class="nav-icon"></span> User Management
             </a>
         @endif
 
