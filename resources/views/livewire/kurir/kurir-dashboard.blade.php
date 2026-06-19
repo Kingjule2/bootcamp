@@ -21,12 +21,25 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Tugas Pengiriman Saya</h3>
+    {{-- Header & Tab Switcher --}}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Tugas Pengiriman Saya</h3>
+        
+        <div style="display: flex; gap: 0.5rem; background: #f1f5f9; padding: 0.375rem; border-radius: 0.75rem; border: 1px solid var(--color-border);">
+            <button wire:click="$set('activeTab', 'aktif')" style="display: flex; align-items: center; gap: 0.4rem; background: {{ $activeTab === 'aktif' ? 'white' : 'transparent' }}; color: {{ $activeTab === 'aktif' ? 'var(--color-primary-700)' : 'var(--color-text-secondary)' }}; border: none; padding: 0.4rem 0.875rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.8125rem; cursor: pointer; box-shadow: {{ $activeTab === 'aktif' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none' }}; transition: all 0.2s;">
+                🚚 Pengiriman Aktif
+                @if($stats['dalam_perjalanan'] > 0)
+                    <span style="background: var(--color-primary-600); color: white; font-size: 0.6875rem; border-radius: 9999px; padding: 0.1rem 0.5rem; min-width: 1.25rem; text-align: center;">{{ $stats['dalam_perjalanan'] }}</span>
+                @endif
+            </button>
+            <button wire:click="$set('activeTab', 'riwayat')" style="display: flex; align-items: center; gap: 0.4rem; background: {{ $activeTab === 'riwayat' ? 'white' : 'transparent' }}; color: {{ $activeTab === 'riwayat' ? 'var(--color-primary-700)' : 'var(--color-text-secondary)' }}; border: none; padding: 0.4rem 0.875rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.8125rem; cursor: pointer; box-shadow: {{ $activeTab === 'riwayat' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none' }}; transition: all 0.2s;">
+                📋 Riwayat Selesai
+            </button>
         </div>
+    </div>
         <div class="card-body" style="padding: 0;">
-            @forelse($pengirimans as $p)
+            @if($activeTab === 'aktif')
+                @forelse($pengirimanAktif as $p)
                 <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--color-border); transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;">
@@ -70,11 +83,41 @@
                         @endif
                     </div>
                 </div>
-            @empty
-                <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
-                    <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada tugas pengiriman untuk Anda.</p>
-                </div>
-            @endforelse
+                @empty
+                    <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
+                        <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Anda tidak memiliki pengiriman aktif saat ini.</p>
+                        <p style="font-size: 0.8125rem; margin-top: 0.5rem;">Status Anda saat ini adalah Standby.</p>
+                    </div>
+                @endforelse
+            @endif
+
+            @if($activeTab === 'riwayat')
+                @forelse($riwayatSelesai as $p)
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--color-border); transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="font-size: 1rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 0.35rem;" class="truncate-2">
+                                        {{ $p->menu->nama_menu }}
+                                    </div>
+                                    <div style="font-size: 0.8125rem; color: var(--color-text-muted); display: flex; gap: 0.85rem; flex-wrap: wrap;">
+                                        <span>Ke: {{ $p->menu->targetSekolah->nama_entitas }}</span>
+                                        <span>{{ $p->menu->porsi_rencana }} porsi</span>
+                                    </div>
+                                </div>
+                                <span class="badge badge-received">Selesai</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--color-text-muted);">
+                                Waktu Berangkat: {{ $p->dispatched_at->format('d M Y H:i') }} | Diterima: {{ $p->received_at->format('H:i') }}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
+                        <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada riwayat pengiriman.</p>
+                    </div>
+                @endforelse
+            @endif
         </div>
     </div>
 </div>

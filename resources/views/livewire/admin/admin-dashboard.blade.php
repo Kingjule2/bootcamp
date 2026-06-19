@@ -63,9 +63,29 @@
 
         {{-- Monitoring Table --}}
         <div class="card">
-            <div class="card-header">
-                <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">📡 Monitoring Pengiriman Real-Time</h3>
-                <span style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $stats['totalPengiriman'] }} total pengiriman</span>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">📡 Monitoring Pengiriman Real-Time</h3>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $stats['totalPengiriman'] }} total pengiriman</span>
+                </div>
+                
+                {{-- Filters & Actions --}}
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari menu, dapur, sekolah..." style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none; width: 220px;" />
+                    
+                    <select wire:model.live="filterStatus" style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none;">
+                        <option value="">Semua Status</option>
+                        <option value="Sedang Dimasak">Sedang Dimasak</option>
+                        <option value="Dalam Perjalanan">Dalam Perjalanan</option>
+                        <option value="Diterima">Diterima</option>
+                    </select>
+
+                    <input type="date" wire:model.live="filterDate" style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none;" />
+
+                    <button wire:click="exportCSV" style="background: white; border: 1px solid var(--color-border); color: #16a34a; font-weight: 600; font-size: 0.8125rem; padding: 0.4rem 0.875rem; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                        📊 Export CSV
+                    </button>
+                </div>
             </div>
             <div class="card-body" style="padding: 0; overflow-x: auto;">
                 @if($allPengiriman->count() > 0)
