@@ -42,21 +42,21 @@ class Menu extends Model
         return $this->hasOneThrough(
             User::class,
             Sekolah::class,
-            'id_sekolah', // Foreign key on Sekolah (intermediate)
-            'id_users',   // Foreign key on User (related)
-            'id_sekolah', // Local key on Menu
-            'id_users'    // Local key on Sekolah
+            'id_sekolah',     // Foreign key on sekolah table
+            'id_users',       // Foreign key on users table
+            'id_sekolah',     // Local key on menus table
+            'id_users'        // Local key on sekolah table
         );
-    }
-
-    public function ahliGizi(): BelongsTo
-    {
-        return $this->belongsTo(AhliGizi::class, 'id_ahli_gizi', 'id_ahli_gizi');
     }
 
     public function pengiriman(): HasOne
     {
         return $this->hasOne(Pengiriman::class, 'id_menus', 'id_menus');
+    }
+
+    public function ahliGizi(): BelongsTo
+    {
+        return $this->belongsTo(AhliGizi::class, 'id_ahli_gizi', 'id_ahli_gizi');
     }
 
     // ── Status Helpers ──

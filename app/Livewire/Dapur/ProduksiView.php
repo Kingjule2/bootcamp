@@ -17,11 +17,9 @@ class ProduksiView extends Component
 
         // Check if pengiriman already exists
         if (!$menu->pengiriman) {
-            $defaultKurir = \App\Models\Kurir::first();
-            
             Pengiriman::create([
                 'id_menus' => $menu->id_menus,
-                'id_kurir' => $defaultKurir ? $defaultKurir->id_kurir : 1,
+                'id_kurir' => null,
                 'status_logistik' => 'Sedang Dimasak',
             ]);
 

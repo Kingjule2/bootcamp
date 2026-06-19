@@ -28,13 +28,13 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label">Username atau Email</label>
                     <input
                         type="text"
                         id="username"
                         name="username"
                         class="form-input"
-                        placeholder="Masukkan username..."
+                        placeholder="Masukkan username atau email..."
                         value="{{ old('username') }}"
                         required
                         autofocus

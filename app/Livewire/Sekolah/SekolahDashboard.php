@@ -18,8 +18,8 @@ class SekolahDashboard extends Component
 
     public function konfirmasiDiterima(int $pengirimanId)
     {
-        $sekolahId = auth()->user()->sekolah?->id_sekolah;
-        
+        $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
+
         $pengiriman = Pengiriman::where('id_pengiriman', $pengirimanId)
             ->whereHas('menu', fn($q) => $q->where('id_sekolah', $sekolahId))
             ->firstOrFail();
@@ -29,6 +29,12 @@ class SekolahDashboard extends Component
             'received_at' => now(),
             'device_info' => request()->userAgent(),
         ]);
+
+        if ($pengiriman->id_kurir) {
+            \App\Models\Kurir::where('id_kurir', $pengiriman->id_kurir)->update([
+                'status_tugas' => 'Standby'
+            ]);
+        }
 
         $this->selectedPengirimanId = $pengirimanId;
         $this->porsi_diterima = $pengiriman->menu->porsi_rencana;
@@ -67,7 +73,7 @@ class SekolahDashboard extends Component
 
     public function render()
     {
-        $sekolahId = auth()->user()->sekolah?->id_sekolah;
+        $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
 
         $pengiriman = Pengiriman::whereHas('menu', fn($q) => $q->where('id_sekolah', $sekolahId))
             ->with(['menu.dapur', 'laporanSekolah'])

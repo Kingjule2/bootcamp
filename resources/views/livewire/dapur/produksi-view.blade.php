@@ -27,8 +27,8 @@
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                             @if(!$menu->pengiriman)
-                                <button wire:click="mulaiMasak({{ $menu->id }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-                                    Mulai Masak
+                                <button wire:click="mulaiMasak({{ $menu->id_menus }})" class="btn" style="background: var(--color-primary-600); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
+                                    👨‍🍳 Mulai Masak
                                 </button>
                             @elseif($menu->pengiriman->status_logistik === 'Sedang Dimasak')
                                 <span class="badge" style="background: #fef3c7; color: #d97706; padding: 0.5rem 1rem; font-size: 0.875rem;">

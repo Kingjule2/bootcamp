@@ -24,11 +24,11 @@ class Sekolah extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_users');
+        return $this->belongsTo(User::class, 'id_users', 'id_users');
     }
 
     public function menus(): HasMany
     {
-        return $this->hasMany(Menu::class, 'id_sekolah');
+        return $this->hasMany(Menu::class, 'id_sekolah', 'id_sekolah');
     }
 }

@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class PengirimanView extends Component
 {
-    public $id_kurir = '';
+    public $selectedKurirId = '';
     public $showKirimModal = false;
     public $selectedPengirimanId = null;
 
@@ -21,7 +21,7 @@ class PengirimanView extends Component
     public function confirmKirim()
     {
         $this->validate([
-            'id_kurir' => 'required|exists:kurir,id_kurir',
+            'selectedKurirId' => 'required|exists:kurir,id_kurir',
         ]);
 
         $pengiriman = Pengiriman::where('id_pengiriman', $this->selectedPengirimanId)
@@ -31,19 +31,23 @@ class PengirimanView extends Component
             ->firstOrFail();
 
         $pengiriman->update([
-            'id_kurir' => $this->id_kurir,
+            'id_kurir' => $this->selectedKurirId,
             'status_logistik' => 'Dalam Perjalanan',
             'dispatched_at' => now(),
             'device_info' => request()->userAgent(),
         ]);
 
-        $this->reset(['id_kurir', 'showKirimModal', 'selectedPengirimanId']);
+        \App\Models\Kurir::where('id_kurir', $this->selectedKurirId)->update([
+            'status_tugas' => 'On Delivery'
+        ]);
+
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedPengirimanId']);
         session()->flash('success', 'Makanan berhasil dikirim! Kurir sedang dalam perjalanan.');
     }
 
     public function cancelKirim()
     {
-        $this->reset(['id_kurir', 'showKirimModal', 'selectedPengirimanId']);
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedPengirimanId']);
     }
 
     public function render()
@@ -56,8 +60,8 @@ class PengirimanView extends Component
             ->latest()
             ->get();
 
-        $kurirList = \App\Models\Kurir::with('user')->get();
+        $kurirs = \App\Models\Kurir::with('user')->get();
 
-        return view('livewire.dapur.pengiriman-view', compact('pengirimans', 'kurirList'));
+        return view('livewire.dapur.pengiriman-view', compact('pengirimans', 'kurirs'));
     }
 }

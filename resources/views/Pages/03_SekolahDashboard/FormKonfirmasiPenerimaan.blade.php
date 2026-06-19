@@ -7,22 +7,22 @@
             window.addEventListener('offline', () => this.isOnline = false);
             // Check if this delivery was already received offline
             const pending = JSON.parse(localStorage.getItem('offline_deliveries') || '[]');
-            if (pending.some(item => item.pengiriman_id === {{ $p->id }} && item.status_logistik === 'Diterima')) {
+            if (pending.some(item => item.pengiriman_id === {{ $p->id_pengiriman }} && item.status_logistik === 'Diterima')) {
                 this.isLocallyReceived = true;
             }
         },
         handleConfirm() {
             if (this.isOnline) {
                 // Call Livewire directly
-                @this.call('konfirmasiDiterima', {{ $p->id }});
+                @this.call('konfirmasiDiterima', {{ $p->id_pengiriman }});
             } else {
                 // Offline fallback
                 const pending = JSON.parse(localStorage.getItem('offline_deliveries') || '[]');
                 
                 // Add to queue if not already there
-                if (!pending.some(item => item.pengiriman_id === {{ $p->id }} && item.status_logistik === 'Diterima')) {
+                if (!pending.some(item => item.pengiriman_id === {{ $p->id_pengiriman }} && item.status_logistik === 'Diterima')) {
                     pending.push({
-                        pengiriman_id: {{ $p->id }},
+                        pengiriman_id: {{ $p->id_pengiriman }},
                         status_logistik: 'Diterima',
                         received_at: new Date().toISOString(),
                         device_info: navigator.userAgent

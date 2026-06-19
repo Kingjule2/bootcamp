@@ -20,8 +20,8 @@ class User extends Authenticatable
         'password',
         'role',
         'nama_entitas',
-        'email',
         'status_akun',
+        'email',
     ];
 
     protected $hidden = [
@@ -67,17 +67,17 @@ class User extends Authenticatable
 
     public function sekolah(): HasOne
     {
-        return $this->hasOne(Sekolah::class, 'id_users');
-    }
-
-    public function ahliGizi(): HasOne
-    {
-        return $this->hasOne(AhliGizi::class, 'id_users');
+        return $this->hasOne(Sekolah::class, 'id_users', 'id_users');
     }
 
     public function kurir(): HasOne
     {
-        return $this->hasOne(Kurir::class, 'id_users');
+        return $this->hasOne(Kurir::class, 'id_users', 'id_users');
+    }
+
+    public function ahliGizi(): HasOne
+    {
+        return $this->hasOne(AhliGizi::class, 'id_users', 'id_users');
     }
 
     /** Menus submitted by this dapur */
@@ -92,10 +92,10 @@ class User extends Authenticatable
         return $this->hasManyThrough(
             Menu::class,
             Sekolah::class,
-            'id_users',       // FK on Sekolah
-            'id_sekolah',     // FK on Menu
-            'id_users',       // Local key on User
-            'id_sekolah'      // Local key on Sekolah
+            'id_users',       // Foreign key on sekolah table
+            'id_sekolah',     // Foreign key on menus table
+            'id_users',       // Local key on users table
+            'id_sekolah'      // Local key on sekolah table
         );
     }
 }

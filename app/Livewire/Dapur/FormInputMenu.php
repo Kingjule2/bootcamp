@@ -47,6 +47,9 @@ class FormInputMenu extends Component
             'protein' => $this->protein,
             'porsi_rencana' => $this->porsi_rencana,
             'status' => 'Pending Verification',
+            'karbohidrat' => 50, // default placeholder
+            'lemak' => 10, // default placeholder
+            'id_ahli_gizi' => \App\Models\AhliGizi::value('id_ahli_gizi') ?? 1,
         ]);
 
         $this->reset(['nama_menu', 'kalori', 'protein', 'porsi_rencana', 'id_sekolah']);

@@ -13,6 +13,7 @@ class Kurir extends Model
 
     protected $table = 'kurir';
     protected $primaryKey = 'id_kurir';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_users',
@@ -25,11 +26,11 @@ class Kurir extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_users');
+        return $this->belongsTo(User::class, 'id_users', 'id_users');
     }
 
-    public function pengirimans(): HasMany
+    public function pengiriman(): HasMany
     {
-        return $this->hasMany(Pengiriman::class, 'id_kurir');
+        return $this->hasMany(Pengiriman::class, 'id_kurir', 'id_kurir');
     }
 }

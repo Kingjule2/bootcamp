@@ -15,90 +15,167 @@ use Livewire\Attributes\Url;
 
 class AdminDashboard extends Component
 {
-    #[Url]
-    public $tab = 'monitoring';
+    public $activeTab = 'monitoring'; // monitoring or user_management
 
-    // Properties for creating user
-    public $newUsername = '';
-    public $newPassword = '';
-    public $newRole = '';
-    public $newNamaEntitas = '';
+    // User CRUD properties
+    public $showUserModal = false;
+    public $editingUserId = null;
 
-    protected $validationAttributes = [
-        'newUsername' => 'Username',
-        'newPassword' => 'Password',
-        'newRole' => 'Role',
-        'newNamaEntitas' => 'Nama Instansi/Entitas',
-    ];
+    // User Form fields
+    public $nama_entitas = '';
+    public $username = '';
+    public $email = '';
+    public $password = '';
+    public $role = '';
 
-    public function createUser()
+    // Profile-specific fields
+    public $NIS = '';
+    public $jumlah_siswa = 0;
+    public $no_telp = '';
+    public $plat_nomor = '';
+    public $jenis_kendaraan = 'Motor';
+    public $no_str = '';
+    public $spesialisasi = '';
+
+    public function switchTab($tab)
     {
-        $this->validate([
-            'newUsername' => 'required|string|min:4|unique:users,username',
-            'newPassword' => 'required|string|min:6',
-            'newRole' => 'required|in:dapur,ahli_gizi,sekolah,admin,kurir',
-            'newNamaEntitas' => 'required|string|min:4',
-        ]);
+        $this->activeTab = $tab;
+    }
 
-        $user = User::create([
-            'username' => $this->newUsername,
-            'password' => $this->newPassword, // Hashes automatically via casts in User model
-            'role' => $this->newRole,
-            'nama_entitas' => $this->newNamaEntitas,
-        ]);
+    public function openAddUser()
+    {
+        $this->resetForm();
+        $this->editingUserId = null;
+        $this->showUserModal = true;
+    }
 
-        // Create child metadata record if applicable
-        if ($user->role === 'sekolah') {
-            Sekolah::create([
-                'id_users' => $user->id_users,
-                'NIS' => rand(100000, 999999),
-                'jumlah_siswa' => 0,
-                'no_telp' => 0,
-            ]);
-        } elseif ($user->role === 'ahli_gizi') {
-            AhliGizi::create([
-                'id_users' => $user->id_users,
-                'no_str' => '-',
-                'spesialisasi' => 'Gizi Anak & Remaja',
-                'min_kalori' => 0,
-                'max_kalori' => 0,
-                'min_protein' => 0,
-                'max_karbohidrat' => 0,
-                'max_lemak' => 0,
-                'status_menu' => 'Approve',
-                'catatan' => '-',
-            ]);
-        } elseif ($user->role === 'kurir') {
-            Kurir::create([
-                'id_users' => $user->id_users,
-                'no_telp' => '-',
-                'plat_nomor' => '-',
-                'jenis_kendaraan' => '-',
-                'status_tugas' => 'Standby',
-            ]);
+    public function editUser($userId)
+    {
+        $this->resetForm();
+        $this->editingUserId = $userId;
+        $user = \App\Models\User::with(['sekolah', 'kurir', 'ahliGizi'])->findOrFail($userId);
+
+        $this->nama_entitas = $user->nama_entitas;
+        $this->username = $user->username;
+        $this->email = $user->email;
+        $this->role = $user->role;
+
+        if ($user->role === 'sekolah' && $user->sekolah) {
+            $this->NIS = $user->sekolah->NIS;
+            $this->jumlah_siswa = $user->sekolah->jumlah_siswa;
+            $this->no_telp = $user->sekolah->no_telp;
+        } elseif ($user->role === 'kurir' && $user->kurir) {
+            $this->no_telp = $user->kurir->no_telp;
+            $this->plat_nomor = $user->kurir->plat_nomor;
+            $this->jenis_kendaraan = $user->kurir->jenis_kendaraan;
+        } elseif ($user->role === 'ahli_gizi' && $user->ahliGizi) {
+            $this->no_str = $user->ahliGizi->no_str;
+            $this->spesialisasi = $user->ahliGizi->spesialisasi;
         }
 
-        $this->reset(['newUsername', 'newPassword', 'newRole', 'newNamaEntitas']);
+        $this->showUserModal = true;
+    }
 
-        session()->flash('message', 'Pengguna baru berhasil dibuat!');
+    public function saveUser()
+    {
+        $rules = [
+            'nama_entitas' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . ($this->editingUserId ?? 'NULL') . ',id_users',
+            'email' => 'required|email|max:255|unique:users,email,' . ($this->editingUserId ?? 'NULL') . ',id_users',
+            'role' => 'required|in:dapur,ahli_gizi,sekolah,kurir,admin',
+        ];
+
+        if (!$this->editingUserId) {
+            $rules['password'] = 'required|string|min:6';
+        } else {
+            $rules['password'] = 'nullable|string|min:6';
+        }
+
+        if ($this->role === 'sekolah') {
+            $rules['NIS'] = 'required|string|max:50';
+            $rules['jumlah_siswa'] = 'required|integer|min:0';
+        } elseif ($this->role === 'kurir') {
+            $rules['no_telp'] = 'required|string|max:20';
+            $rules['plat_nomor'] = 'required|string|max:20';
+        } elseif ($this->role === 'ahli_gizi') {
+            $rules['no_str'] = 'required|string|max:100';
+        }
+
+        $this->validate($rules);
+
+        $userData = [
+            'nama_entitas' => $this->nama_entitas,
+            'username' => $this->username,
+            'email' => $this->email,
+            'role' => $this->role,
+        ];
+
+        if ($this->password) {
+            $userData['password'] = bcrypt($this->password);
+        }
+
+        if ($this->editingUserId) {
+            $user = \App\Models\User::findOrFail($this->editingUserId);
+            $user->update($userData);
+        } else {
+            $user = \App\Models\User::create($userData);
+        }
+
+        // Sync Profile Data
+        if ($this->role === 'sekolah') {
+            \App\Models\Sekolah::updateOrCreate(
+                ['id_users' => $user->id_users],
+                ['NIS' => $this->NIS, 'jumlah_siswa' => $this->jumlah_siswa, 'no_telp' => $this->no_telp]
+            );
+        } elseif ($this->role === 'kurir') {
+            \App\Models\Kurir::updateOrCreate(
+                ['id_users' => $user->id_users],
+                ['no_telp' => $this->no_telp, 'plat_nomor' => $this->plat_nomor, 'jenis_kendaraan' => $this->jenis_kendaraan]
+            );
+        } elseif ($this->role === 'ahli_gizi') {
+            \App\Models\AhliGizi::updateOrCreate(
+                ['id_users' => $user->id_users],
+                ['no_str' => $this->no_str, 'spesialisasi' => $this->spesialisasi]
+            );
+        }
+
+        $this->closeUserModal();
+        session()->flash('success', 'Data user berhasil disimpan!');
     }
 
     public function deleteUser($userId)
     {
-        if ($userId === auth()->id()) {
-            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri!');
-            return;
-        }
+        $user = \App\Models\User::findOrFail($userId);
 
-        $user = User::find($userId);
-        if ($user) {
-            $user->delete();
-            session()->flash('message', 'Pengguna berhasil dihapus!');
-        }
+        // Delete profiles first
+        \App\Models\Sekolah::where('id_users', $userId)->delete();
+        \App\Models\Kurir::where('id_users', $userId)->delete();
+        \App\Models\AhliGizi::where('id_users', $userId)->delete();
+
+        $user->delete();
+        session()->flash('success', 'User berhasil dihapus.');
+    }
+
+    public function closeUserModal()
+    {
+        $this->showUserModal = false;
+        $this->resetForm();
+    }
+
+    private function resetForm()
+    {
+        $this->reset([
+            'nama_entitas', 'username', 'email', 'password', 'role',
+            'NIS', 'jumlah_siswa', 'no_telp', 'plat_nomor', 'jenis_kendaraan',
+            'no_str', 'spesialisasi', 'editingUserId'
+        ]);
     }
 
     public function render()
     {
+        // All users for list
+        $users = \App\Models\User::with(['sekolah', 'kurir', 'ahliGizi'])->latest()->get();
+
         // All pengiriman for monitoring table
         $allPengiriman = Pengiriman::with(['menu.dapur', 'menu.targetSekolah', 'laporanSekolah'])
             ->latest()
@@ -157,12 +234,6 @@ class AdminDashboard extends Component
             'warningCount' => $warningCount,
             'totalPengiriman' => $allPengiriman->count(),
         ];
-
-        // Fetch users list if on user management tab
-        $users = [];
-        if ($this->tab === 'users') {
-            $users = User::latest()->get();
-        }
 
         return view('livewire.admin.admin-dashboard', compact('allPengiriman', 'stats', 'chartData', 'users'));
     }

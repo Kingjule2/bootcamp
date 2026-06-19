@@ -38,19 +38,19 @@ class Pengiriman extends Model
         return $this->belongsTo(Menu::class, 'id_menus', 'id_menus');
     }
 
-    public function kurir(): BelongsTo
-    {
-        return $this->belongsTo(Kurir::class, 'id_kurir', 'id_kurir');
-    }
-
     public function laporanSekolah(): HasOne
     {
         return $this->hasOne(LaporanSekolah::class, 'pengiriman_id', 'id_pengiriman');
     }
 
-    // ── Accessors (Backward Compatibility) ──
+    public function kurir(): BelongsTo
+    {
+        return $this->belongsTo(Kurir::class, 'id_kurir', 'id_kurir');
+    }
 
-    public function getNamaKurirAttribute()
+    // ── Accessors ──
+
+    public function getNamaKurirAttribute(): string
     {
         return $this->kurir?->user?->nama_entitas ?? '-';
     }

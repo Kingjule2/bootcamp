@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class DapurDashboard extends Component
 {
-    public $id_kurir = '';
+    public $selectedKurirId = '';
     public $showKirimModal = false;
     public $selectedMenuId = null;
 
@@ -22,7 +22,7 @@ class DapurDashboard extends Component
     public function confirmKirim()
     {
         $this->validate([
-            'id_kurir' => 'required|exists:kurir,id_kurir',
+            'selectedKurirId' => 'required|exists:kurir,id_kurir',
         ]);
 
         $menu = Menu::where('id_menus', $this->selectedMenuId)
@@ -32,19 +32,23 @@ class DapurDashboard extends Component
 
         Pengiriman::create([
             'id_menus' => $menu->id_menus,
-            'id_kurir' => $this->id_kurir,
+            'id_kurir' => $this->selectedKurirId,
             'status_logistik' => 'Dalam Perjalanan',
             'dispatched_at' => now(),
             'device_info' => request()->userAgent(),
         ]);
 
-        $this->reset(['id_kurir', 'showKirimModal', 'selectedMenuId']);
+        \App\Models\Kurir::where('id_kurir', $this->selectedKurirId)->update([
+            'status_tugas' => 'On Delivery'
+        ]);
+
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedMenuId']);
         session()->flash('success', 'Makanan berhasil dikirim! Kurir sedang dalam perjalanan.');
     }
 
     public function cancelKirim()
     {
-        $this->reset(['id_kurir', 'showKirimModal', 'selectedMenuId']);
+        $this->reset(['selectedKurirId', 'showKirimModal', 'selectedMenuId']);
     }
 
     public function render()
@@ -61,8 +65,8 @@ class DapurDashboard extends Component
             'rejected' => $menus->where('status', 'Rejected')->count(),
         ];
 
-        $kurirList = \App\Models\Kurir::with('user')->get();
+        $kurirs = \App\Models\Kurir::with('user')->get();
 
-        return view('livewire.dapur.dapur-dashboard', compact('menus', 'stats', 'kurirList'));
+        return view('livewire.dapur.dapur-dashboard', compact('menus', 'stats', 'kurirs'));
     }
 }

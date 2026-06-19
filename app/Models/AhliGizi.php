@@ -29,11 +29,11 @@ class AhliGizi extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_users');
+        return $this->belongsTo(User::class, 'id_users', 'id_users');
     }
 
     public function menus(): HasMany
     {
-        return $this->hasMany(Menu::class, 'id_ahli_gizi');
+        return $this->hasMany(Menu::class, 'id_ahli_gizi', 'id_ahli_gizi');
     }
 }

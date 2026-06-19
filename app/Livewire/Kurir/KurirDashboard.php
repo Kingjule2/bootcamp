@@ -7,16 +7,42 @@ use Livewire\Component;
 
 class KurirDashboard extends Component
 {
+    public function tandaiDiterima(int $pengirimanId)
+    {
+        $kurirId = auth()->user()->kurir->id_kurir ?? null;
+
+        $pengiriman = Pengiriman::where('id_pengiriman', $pengirimanId)
+            ->where('id_kurir', $kurirId)
+            ->where('status_logistik', 'Dalam Perjalanan')
+            ->firstOrFail();
+
+        $pengiriman->update([
+            'status_logistik' => 'Diterima',
+            'received_at' => now(),
+            'device_info' => request()->userAgent(),
+        ]);
+
+        if ($pengiriman->id_kurir) {
+            \App\Models\Kurir::where('id_kurir', $pengiriman->id_kurir)->update([
+                'status_tugas' => 'Standby'
+            ]);
+        }
+
+        session()->flash('success', '✅ Pengiriman berhasil diselesaikan! Status tugas Anda kembali Standby.');
+    }
+
     public function render()
     {
-        // Get the courier record for the logged-in user
-        $kurir = auth()->user()->kurir;
+        // Get deliveries assigned to this kurir
+        $kurirId = auth()->user()->kurir->id_kurir ?? null;
 
-        $pengirimans = Pengiriman::where('id_kurir', $kurir?->id_kurir ?? 0)
-            ->whereIn('status_logistik', ['Dalam Perjalanan', 'Diterima'])
-            ->with(['menu.dapur', 'menu.targetSekolah'])
-            ->latest()
-            ->get();
+        $pengirimans = $kurirId
+            ? Pengiriman::where('id_kurir', $kurirId)
+                ->whereIn('status_logistik', ['Dalam Perjalanan', 'Diterima'])
+                ->with(['menu.dapur', 'menu.targetSekolah'])
+                ->latest()
+                ->get()
+            : collect();
 
         $stats = [
             'dalam_perjalanan' => $pengirimans->where('status_logistik', 'Dalam Perjalanan')->count(),

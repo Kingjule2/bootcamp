@@ -56,7 +56,7 @@
                     <select wire:model="id_sekolah" id="id_sekolah" class="form-input">
                         <option value="">— Pilih Sekolah —</option>
                         @foreach($sekolahList as $sekolah)
-                            <option value="{{ $sekolah->id_sekolah }}">{{ $sekolah->user->nama_entitas }}</option>
+                            <option value="{{ $sekolah->id_sekolah }}">{{ $sekolah->user->nama_entitas ?? '-' }}</option>
                         @endforeach
                     </select>
                     @error('id_sekolah') <div class="form-error">{{ $message }}</div> @enderror
