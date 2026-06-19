@@ -4,52 +4,79 @@
     </div>
     <div class="card-body">
         @if(session('menu-success'))
-            <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
                 <span style="font-size: 0.8125rem; color: #065f46;">{{ session('menu-success') }}</span>
             </div>
         @endif
 
         <form wire:submit="submit">
-            <x-components.shared.input 
-                label="Rincian Menu Makanan" 
-                name="nama_menu" 
-                type="textarea" 
-                wire:model="nama_menu" 
-                placeholder="Contoh: Nasi Putih, Ayam Goreng Lengkuas, Tumis Buncis, Buah Jeruk" 
-                rows="3" 
-                style="resize: vertical;" 
+            <x-components.shared.input
+                label="Rincian Menu Makanan"
+                name="nama_menu"
+                type="textarea"
+                wire:model="nama_menu"
+                placeholder="Contoh: Nasi Putih, Ayam Goreng Lengkuas, Tumis Buncis, Buah Jeruk"
+                rows="3"
+                style="resize: vertical;"
             />
 
+            {{-- Makronutrisi Row 1 --}}
+            <div style="margin-top: 0.5rem; margin-bottom: 0.25rem; font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                Kandungan Gizi
+            </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <x-components.shared.input 
-                    label="Est. Kalori (kkal)" 
-                    name="kalori" 
-                    type="number" 
-                    wire:model="kalori" 
-                    placeholder="650" 
-                    min="400" 
-                    max="1500" 
+                <x-components.shared.input
+                    label="Kalori (kkal)"
+                    name="kalori"
+                    type="number"
+                    wire:model="kalori"
+                    placeholder="650"
+                    min="400"
+                    max="1500"
                 />
-                <x-components.shared.input 
-                    label="Protein (gram)" 
-                    name="protein" 
-                    type="number" 
-                    wire:model="protein" 
-                    placeholder="25" 
-                    min="10" 
-                    max="100" 
+                <x-components.shared.input
+                    label="Protein (gram)"
+                    name="protein"
+                    type="number"
+                    wire:model="protein"
+                    placeholder="25"
+                    min="10"
+                    max="100"
                 />
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <x-components.shared.input 
-                    label="Jumlah Porsi" 
-                    name="porsi_rencana" 
-                    type="number" 
-                    wire:model="porsi_rencana" 
-                    placeholder="500" 
-                    min="1" 
-                    max="5000" 
+            {{-- Makronutrisi Row 2 --}}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
+                <x-components.shared.input
+                    label="Karbohidrat (gram)"
+                    name="karbohidrat"
+                    type="number"
+                    wire:model="karbohidrat"
+                    placeholder="80"
+                    min="1"
+                    max="500"
+                />
+                <x-components.shared.input
+                    label="Lemak (gram)"
+                    name="lemak"
+                    type="number"
+                    wire:model="lemak"
+                    placeholder="15"
+                    min="1"
+                    max="200"
+                />
+            </div>
+
+            {{-- Porsi & Sekolah --}}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
+                <x-components.shared.input
+                    label="Jumlah Porsi"
+                    name="porsi_rencana"
+                    type="number"
+                    wire:model="porsi_rencana"
+                    placeholder="500"
+                    min="1"
+                    max="5000"
                 />
                 <div class="form-group">
                     <label for="id_sekolah" class="form-label">Sekolah Tujuan</label>
@@ -63,7 +90,7 @@
                 </div>
             </div>
 
-            <x-components.shared.button type="submit" variant="primary" size="lg" style="width: 100%; margin-top: 0.5rem;">
+            <x-components.shared.button type="submit" variant="primary" size="lg" style="width: 100%; margin-top: 1rem;">
                 Ajukan Menu untuk Verifikasi
             </x-components.shared.button>
         </form>

@@ -53,6 +53,11 @@
                             <div>
                                 <div style="font-size: 0.6875rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tujuan (Sekolah)</div>
                                 <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary-600);">{{ $p->menu->targetSekolah->nama_entitas }}</div>
+                                @if($p->menu->sekolah && $p->menu->sekolah->no_telp)
+                                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.2rem;">
+                                        📞 {{ $p->menu->sekolah->no_telp }}
+                                    </div>
+                                @endif
                             </div>
                         </div>
 

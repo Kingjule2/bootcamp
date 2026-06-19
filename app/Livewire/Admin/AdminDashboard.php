@@ -145,7 +145,35 @@ class AdminDashboard extends Component
 
     public function deleteUser($userId)
     {
+        if ($userId === auth()->id()) {
+            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri!');
+            return;
+        }
+
         $user = \App\Models\User::findOrFail($userId);
+
+        // Cek menu aktif (Dapur)
+        $activeMenus = \App\Models\Menu::where('dapur_id', $userId)
+            ->whereIn('status', ['Pending Verification', 'Ready to Cook'])
+            ->count();
+
+        // Cek pengiriman aktif (Kurir)
+        $kurirProfile = \App\Models\Kurir::where('id_users', $userId)->first();
+        $activeDeliveries = $kurirProfile
+            ? \App\Models\Pengiriman::where('id_kurir', $kurirProfile->id_kurir)
+                ->where('status_logistik', 'Dalam Perjalanan')
+                ->count()
+            : 0;
+
+        if ($activeMenus > 0 || $activeDeliveries > 0) {
+            session()->flash('error',
+                "Tidak bisa menghapus user ini karena masih memiliki " .
+                ($activeMenus > 0 ? "{$activeMenus} menu aktif" : '') .
+                ($activeMenus > 0 && $activeDeliveries > 0 ? ' dan ' : '') .
+                ($activeDeliveries > 0 ? "{$activeDeliveries} pengiriman aktif" : '') . "."
+            );
+            return;
+        }
 
         // Delete profiles first
         \App\Models\Sekolah::where('id_users', $userId)->delete();

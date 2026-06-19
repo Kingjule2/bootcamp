@@ -1,4 +1,15 @@
 <div wire:poll.10s>
+    {{-- Flash Messages --}}
+    @if(session('success'))
+        <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
+            <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">✅ {{ session('success') }}</span>
+        </div>
+    @endif
+    @if(session('error'))
+        <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
+            <span style="font-size: 0.875rem; color: #991b1b; font-weight: 500;">⚠️ {{ session('error') }}</span>
+        </div>
+    @endif
     {{-- Modern Tab Switcher --}}
     <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #f1f5f9; padding: 0.375rem; border-radius: 0.75rem; width: max-content; border: 1px solid var(--color-border);">
         <button wire:click="switchTab('monitoring')" style="display: flex; align-items: center; gap: 0.5rem; background: {{ $activeTab === 'monitoring' ? 'white' : 'transparent' }}; color: {{ $activeTab === 'monitoring' ? 'var(--color-primary-700)' : 'var(--color-text-secondary)' }}; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; box-shadow: {{ $activeTab === 'monitoring' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none' }}; transition: all 0.2s;">
@@ -93,7 +104,13 @@
                                         <div class="truncate-2" style="max-width: 180px; font-size: 0.8125rem;">{{ $p->menu?->nama_menu ?? '-' }}</div>
                                     </td>
                                     <td style="font-size: 0.8125rem;">{{ $p->menu?->targetSekolah?->nama_entitas ?? '-' }}</td>
-                                    <td style="font-size: 0.8125rem;">{{ $p->kurir?->user?->nama_entitas ?? '-' }}</td>
+                                    <td style="font-size: 0.8125rem;">
+                                        @if($p->kurir?->user)
+                                            {{ $p->kurir->user->nama_entitas }}
+                                        @else
+                                            <span style="color: var(--color-text-muted); font-style: italic;">Belum Ditentukan</span>
+                                        @endif
+                                    </td>
                                     <td style="font-size: 0.8125rem; color: var(--color-text-muted);">
                                         {{ $p->dispatched_at ? $p->dispatched_at->format('H:i') : '-' }}
                                     </td>

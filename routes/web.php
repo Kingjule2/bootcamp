@@ -50,9 +50,4 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/', fn () => view('admin.dashboard'))->name('admin.dashboard');
     });
-
-    // Panel 5: Kurir / Driver
-    Route::prefix('kurir')->middleware('role:kurir')->group(function () {
-        Route::get('/', fn () => view('kurir.dashboard'))->name('kurir.dashboard');
-    });
 });
