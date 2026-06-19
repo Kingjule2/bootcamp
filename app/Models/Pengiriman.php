@@ -14,12 +14,12 @@ class Pengiriman extends Model
 
     protected $fillable = [
         'id_menus',
+        'id_kurir',
         'status_logistik',
         'dispatched_at',
         'received_at',
         'is_synced',
         'device_info',
-        'id_kurir',
     ];
 
     protected function casts(): array
@@ -46,6 +46,13 @@ class Pengiriman extends Model
     public function kurir(): BelongsTo
     {
         return $this->belongsTo(Kurir::class, 'id_kurir', 'id_kurir');
+    }
+
+    // ── Accessors ──
+
+    public function getNamaKurirAttribute(): string
+    {
+        return $this->kurir?->user?->nama_entitas ?? '-';
     }
 
     // ── Status Helpers ──

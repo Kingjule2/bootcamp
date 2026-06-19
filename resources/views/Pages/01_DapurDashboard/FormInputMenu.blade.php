@@ -1,11 +1,10 @@
 <div class="card">
     <div class="card-header">
-        <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">📝 Input Menu Harian</h3>
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">Input Menu Harian</h3>
     </div>
     <div class="card-body">
         @if(session('menu-success'))
             <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span>✅</span>
                 <span style="font-size: 0.8125rem; color: #065f46;">{{ session('menu-success') }}</span>
             </div>
         @endif
@@ -65,7 +64,7 @@
             </div>
 
             <x-components.shared.button type="submit" variant="primary" size="lg" style="width: 100%; margin-top: 0.5rem;">
-                📤 Ajukan Menu untuk Verifikasi
+                Ajukan Menu untuk Verifikasi
             </x-components.shared.button>
         </form>
     </div>

@@ -2,14 +2,13 @@
     {{-- Flash Message --}}
     @if(session('success'))
         <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
-            <span>✅</span>
             <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">{{ session('success') }}</span>
         </div>
     @endif
 
     <div class="card">
         <div class="card-header">
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">🍳 Daftar Menu untuk Diproduksi</h3>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Daftar Menu untuk Diproduksi</h3>
         </div>
         <div class="card-body" style="padding: 0;">
             @forelse($menus as $menu)
@@ -20,10 +19,10 @@
                                 {{ $menu->nama_menu }}
                             </div>
                             <div style="font-size: 0.8125rem; color: var(--color-text-muted); display: flex; gap: 0.85rem; flex-wrap: wrap;">
-                                <span>🏫 {{ $menu->targetSekolah->nama_entitas }}</span>
-                                <span>🔥 {{ $menu->kalori }} kkal</span>
-                                <span>💪 {{ $menu->protein }}g protein</span>
-                                <span>📦 {{ $menu->porsi_rencana }} porsi</span>
+                                <span>Sekolah: {{ $menu->targetSekolah->nama_entitas }}</span>
+                                <span>Kalori: {{ $menu->kalori }} kkal</span>
+                                <span>Protein: {{ $menu->protein }}g protein</span>
+                                <span>Porsi: {{ $menu->porsi_rencana }} porsi</span>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
@@ -33,7 +32,7 @@
                                 </button>
                             @elseif($menu->pengiriman->status_logistik === 'Sedang Dimasak')
                                 <span class="badge" style="background: #fef3c7; color: #d97706; padding: 0.5rem 1rem; font-size: 0.875rem;">
-                                    🔥 Sedang Dimasak
+                                    Sedang Dimasak
                                 </span>
                             @endif
                         </div>
@@ -41,7 +40,6 @@
                 </div>
             @empty
                 <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🍳</div>
                     <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada menu yang siap dimasak saat ini.</p>
                 </div>
             @endforelse

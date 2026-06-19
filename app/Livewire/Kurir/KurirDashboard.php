@@ -35,8 +35,8 @@ class KurirDashboard extends Component
     {
         // Get deliveries assigned to this kurir
         $kurirId = auth()->user()->kurir->id_kurir ?? null;
-        
-        $pengirimans = $kurirId 
+
+        $pengirimans = $kurirId
             ? Pengiriman::where('id_kurir', $kurirId)
                 ->whereIn('status_logistik', ['Dalam Perjalanan', 'Diterima'])
                 ->with(['menu.dapur', 'menu.targetSekolah'])

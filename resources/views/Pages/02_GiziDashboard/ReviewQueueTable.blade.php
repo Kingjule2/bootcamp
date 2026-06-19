@@ -43,7 +43,6 @@
     </table>
 @else
     <div style="padding: 3rem; text-align: center; color: var(--color-text-muted);">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
         <p style="margin: 0; font-weight: 500;">Semua menu sudah diverifikasi!</p>
         <p style="margin: 0.25rem 0 0; font-size: 0.8125rem;">Tidak ada antrean pending saat ini.</p>
     </div>

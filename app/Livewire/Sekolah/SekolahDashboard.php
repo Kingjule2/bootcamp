@@ -19,7 +19,7 @@ class SekolahDashboard extends Component
     public function konfirmasiDiterima(int $pengirimanId)
     {
         $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
-        
+
         $pengiriman = Pengiriman::where('id_pengiriman', $pengirimanId)
             ->whereHas('menu', fn($q) => $q->where('id_sekolah', $sekolahId))
             ->firstOrFail();

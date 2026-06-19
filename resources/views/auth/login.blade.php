@@ -1,13 +1,8 @@
 <x-layouts.auth>
-    <div style="width: 100%; max-width: 420px; animation: slideUp 0.5s ease;">
+    <div style="width: 100%; max-width: 420px; margin: auto; animation: slideUp 0.5s ease;">
         {{-- Logo & Branding --}}
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <div style="display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 1.25rem; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); margin-bottom: 1rem; font-size: 2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-                🍱
-            </div>
-            <h1 style="font-size: 1.75rem; font-weight: 800; color: white; margin: 0; letter-spacing: -0.03em;">
-                NutriRoute
-            </h1>
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <img src="/assets/images/logo-fdly.png" alt="FDLY" style="height: 52px; width: auto; display: inline-block; margin: 0 auto 0.5rem; filter: brightness(0) invert(1);">
             <p style="font-size: 0.875rem; color: rgba(255,255,255,0.7); margin: 0.25rem 0 0;">
                 Sistem Informasi Terpadu MBG
             </p>
@@ -24,7 +19,7 @@
 
             @if($errors->any())
                 <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <span>⚠️</span>
+                    <span style="font-size: 0.8125rem; color: #991b1b; font-weight: 600;">Error:</span>
                     <span style="font-size: 0.8125rem; color: #991b1b;">{{ $errors->first() }}</span>
                 </div>
             @endif
@@ -68,7 +63,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="login-btn">
-                    🔐 Masuk ke Dashboard
+                    Masuk ke Dashboard
                 </button>
             </form>
         </div>

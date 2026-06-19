@@ -1,7 +1,7 @@
 @if($showRejectInput)
     <div style="animation: slideIn 0.3s ease;">
         <x-components.shared.input 
-            label="⚠️ Catatan Penolakan (Wajib)" 
+            label="Catatan Penolakan (Wajib)" 
             name="catatan_gizi" 
             type="textarea" 
             wire:model="catatan_gizi" 

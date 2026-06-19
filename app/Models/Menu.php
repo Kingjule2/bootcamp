@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Menu extends Model
 {
@@ -16,11 +17,11 @@ class Menu extends Model
         'nama_menu',
         'kalori',
         'protein',
+        'karbohidrat',
+        'lemak',
         'porsi_rencana',
         'status',
         'catatan_gizi',
-        'karbohidrat',
-        'lemak',
         'id_ahli_gizi',
     ];
 
@@ -36,7 +37,7 @@ class Menu extends Model
         return $this->belongsTo(Sekolah::class, 'id_sekolah', 'id_sekolah');
     }
 
-    public function targetSekolah()
+    public function targetSekolah(): HasOneThrough
     {
         return $this->hasOneThrough(
             User::class,

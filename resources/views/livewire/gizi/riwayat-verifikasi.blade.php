@@ -1,7 +1,7 @@
 <div>
     <div class="card">
         <div class="card-header">
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">✅ Riwayat Verifikasi Menu</h3>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Riwayat Verifikasi Menu</h3>
         </div>
         <div class="card-body" style="padding: 0;">
             @forelse($riwayat as $action)
@@ -12,18 +12,18 @@
                                 {{ $action->nama_menu }}
                             </div>
                             <div style="font-size: 0.8125rem; color: var(--color-text-muted); display: flex; gap: 0.85rem; flex-wrap: wrap;">
-                                <span>👨‍🍳 {{ $action->dapur->nama_entitas }}</span>
-                                <span>🏫 {{ $action->targetSekolah->nama_entitas }}</span>
-                                <span>🔥 {{ $action->kalori }} kkal</span>
-                                <span>💪 {{ $action->protein }}g protein</span>
-                                <span>📦 {{ $action->porsi_rencana }} porsi</span>
+                                <span>Dapur: {{ $action->dapur->nama_entitas }}</span>
+                                <span>Sekolah: {{ $action->targetSekolah->nama_entitas }}</span>
+                                <span>Kalori: {{ $action->kalori }} kkal</span>
+                                <span>Protein: {{ $action->protein }}g</span>
+                                <span>Porsi: {{ $action->porsi_rencana }}</span>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                             @if($action->status === 'Ready to Cook')
-                                <span class="badge badge-approved" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;">✅ Approved</span>
+                                <span class="badge badge-approved" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;">Approved</span>
                             @else
-                                <span class="badge badge-rejected" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;">❌ Rejected</span>
+                                <span class="badge badge-rejected" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;">Rejected</span>
                             @endif
                             <div style="font-size: 0.75rem; color: var(--color-text-muted);">
                                 {{ $action->updated_at->format('d M Y, H:i') }}
@@ -40,7 +40,6 @@
                 </div>
             @empty
                 <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
                     <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada riwayat verifikasi.</p>
                 </div>
             @endforelse

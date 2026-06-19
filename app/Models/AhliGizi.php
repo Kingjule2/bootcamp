@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AhliGizi extends Model
 {
+    use HasFactory;
+
     protected $table = 'ahli_gizi';
     protected $primaryKey = 'id_ahli_gizi';
 
@@ -28,7 +32,7 @@ class AhliGizi extends Model
         return $this->belongsTo(User::class, 'id_users', 'id_users');
     }
 
-    public function menus(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function menus(): HasMany
     {
         return $this->hasMany(Menu::class, 'id_ahli_gizi', 'id_ahli_gizi');
     }

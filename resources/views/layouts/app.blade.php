@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="NutriRoute — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
+    <meta name="description" content="FDLY — Sistem Informasi Terpadu Penyaluran Makan Bergizi Gratis">
     <meta name="theme-color" content="#059669">
-    <title>{{ $title ?? 'NutriRoute' }} — Sistem MBG</title>
+    <title>{{ $title ?? 'FDLY' }} — Sistem MBG</title>
 
     {{-- PWA Manifest --}}
     <link rel="manifest" href="/manifest.json">

@@ -2,14 +2,13 @@
     {{-- Flash Message --}}
     @if(session('success'))
         <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
-            <span>✅</span>
             <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">{{ session('success') }}</span>
         </div>
     @endif
 
     <div class="card">
         <div class="card-header">
-            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">🚚 Manajemen Pengiriman</h3>
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">Manajemen Pengiriman</h3>
         </div>
         <div class="card-body" style="padding: 0;">
             @forelse($pengirimans as $p)
@@ -20,8 +19,8 @@
                                 {{ $p->menu->nama_menu }}
                             </div>
                             <div style="font-size: 0.8125rem; color: var(--color-text-muted); display: flex; gap: 0.85rem; flex-wrap: wrap;">
-                                <span>🏫 {{ $p->menu->targetSekolah->nama_entitas }}</span>
-                                <span>📦 {{ $p->menu->porsi_rencana }} porsi</span>
+                                <span>Sekolah: {{ $p->menu->targetSekolah->nama_entitas }}</span>
+                                <span>Porsi: {{ $p->menu->porsi_rencana }} porsi</span>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
@@ -31,7 +30,6 @@
                                 </button>
                             @else
                                 <span class="badge badge-{{ $p->status_logistik === 'Diterima' ? 'received' : 'transit' }}">
-                                    {{ $p->status_logistik === 'Dalam Perjalanan' ? '🚚' : '📬' }}
                                     {{ $p->status_logistik }}
                                 </span>
                             @endif
@@ -49,7 +47,6 @@
                 </div>
             @empty
                 <div style="padding: 4rem; text-align: center; color: var(--color-text-muted);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
                     <p style="margin: 0; font-size: 1.125rem; font-weight: 500;">Belum ada antrean pengiriman.</p>
                 </div>
             @endforelse
@@ -65,7 +62,7 @@
         <!-- Modal Content -->
         <div style="position: relative; background: white; width: 100%; max-width: 24rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); overflow: hidden; animation: slideUp 0.3s ease-out;">
             <div style="padding: 1.5rem; border-bottom: 1px solid var(--color-border);">
-                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700; color: var(--color-text-primary);">🚚 Dispatch Pengiriman</h3>
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 700; color: var(--color-text-primary);">Dispatch Pengiriman</h3>
             </div>
             
             <div style="padding: 1.5rem;">

@@ -5,24 +5,29 @@ namespace App\Livewire\Admin;
 use App\Models\LaporanSekolah;
 use App\Models\Menu;
 use App\Models\Pengiriman;
+use App\Models\User;
+use App\Models\Sekolah;
+use App\Models\AhliGizi;
+use App\Models\Kurir;
 use Carbon\Carbon;
 use Livewire\Component;
+use Livewire\Attributes\Url;
 
 class AdminDashboard extends Component
 {
     public $activeTab = 'monitoring'; // monitoring or user_management
-    
+
     // User CRUD properties
     public $showUserModal = false;
     public $editingUserId = null;
-    
+
     // User Form fields
     public $nama_entitas = '';
     public $username = '';
     public $email = '';
     public $password = '';
     public $role = '';
-    
+
     // Profile-specific fields
     public $NIS = '';
     public $jumlah_siswa = 0;
@@ -141,12 +146,12 @@ class AdminDashboard extends Component
     public function deleteUser($userId)
     {
         $user = \App\Models\User::findOrFail($userId);
-        
+
         // Delete profiles first
         \App\Models\Sekolah::where('id_users', $userId)->delete();
         \App\Models\Kurir::where('id_users', $userId)->delete();
         \App\Models\AhliGizi::where('id_users', $userId)->delete();
-        
+
         $user->delete();
         session()->flash('success', 'User berhasil dihapus.');
     }

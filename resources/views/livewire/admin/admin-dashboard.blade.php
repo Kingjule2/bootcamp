@@ -145,101 +145,100 @@
     @include('Pages.04_AdminDashboard.ModalUserForm')
 
     {{-- Chart.js Initialization --}}
-    <script>
-        document.addEventListener('livewire:init', () => {
-            initCharts();
-        });
-
-        // Re-init charts on Livewire poll updates
-        document.addEventListener('livewire:navigated', () => {
-            initCharts();
-        });
-
-        function initCharts() {
-            const chartData = @json($chartData);
-
-            // Destroy existing charts if they exist
-            ['chartPorsi', 'chartRating', 'chartWaste'].forEach(id => {
-                const existing = Chart.getChart(id);
-                if (existing) existing.destroy();
+    @if($activeTab === 'monitoring')
+        <script>
+            document.addEventListener('livewire:init', () => {
+                initCharts();
             });
 
-            // Chart 1: Total Porsi (Bar Chart)
-            new Chart(document.getElementById('chartPorsi'), {
-                type: 'bar',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [{
-                        label: 'Porsi',
-                        data: chartData.porsi,
-                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                        borderColor: 'rgb(5, 150, 105)',
-                        borderWidth: 2,
-                        borderRadius: 6,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
-                }
+            document.addEventListener('livewire:navigated', () => {
+                initCharts();
             });
 
-            // Chart 2: Rating (Line Chart)
-            new Chart(document.getElementById('chartRating'), {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [{
-                        label: 'Rating',
-                        data: chartData.rating,
-                        borderColor: 'rgb(245, 158, 11)',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: 'rgb(245, 158, 11)',
-                        pointRadius: 4,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { min: 0, max: 5, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
-                }
-            });
+            function initCharts() {
+                const chartPorsiEl = document.getElementById('chartPorsi');
+                if (!chartPorsiEl) return;
 
-            // Chart 3: Food Waste (Doughnut Chart)
-            const totalWaste = chartData.waste.reduce((a, b) => a + b, 0);
-            const avgWaste = chartData.waste.length > 0 ? (totalWaste / chartData.waste.filter(v => v > 0).length || 0) : 0;
-            new Chart(document.getElementById('chartWaste'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Food Waste', 'Terkonsumsi'],
-                    datasets: [{
-                        data: [avgWaste.toFixed(1), (100 - avgWaste).toFixed(1)],
-                        backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(16, 185, 129, 0.6)'],
-                        borderColor: ['rgb(220, 38, 38)', 'rgb(5, 150, 105)'],
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+                const chartData = @json($chartData);
+
+                ['chartPorsi', 'chartRating', 'chartWaste'].forEach(id => {
+                    const existing = Chart.getChart(id);
+                    if (existing) existing.destroy();
+                });
+
+                new Chart(chartPorsiEl, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Porsi',
+                            data: chartData.porsi,
+                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                            borderColor: 'rgb(5, 150, 105)',
+                            borderWidth: 2,
+                            borderRadius: 6,
+                        }]
                     },
-                    cutout: '65%',
-                }
-            });
-        }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                    }
+                });
 
-        // Reinit on Livewire update
-        if (typeof Livewire !== 'undefined') {
-            Livewire.hook('morph.updated', () => {
-                setTimeout(initCharts, 100);
-            });
-        }
-    </script>
+                new Chart(document.getElementById('chartRating'), {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Rating',
+                            data: chartData.rating,
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgb(245, 158, 11)',
+                            pointRadius: 4,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { min: 0, max: 5, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                    }
+                });
+
+                const totalWaste = chartData.waste.reduce((a, b) => a + b, 0);
+                const avgWaste = chartData.waste.length > 0 ? (totalWaste / chartData.waste.filter(v => v > 0).length || 0) : 0;
+                new Chart(document.getElementById('chartWaste'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Food Waste', 'Terkonsumsi'],
+                        datasets: [{
+                            data: [avgWaste.toFixed(1), (100 - avgWaste).toFixed(1)],
+                            backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(16, 185, 129, 0.6)'],
+                            borderColor: ['rgb(220, 38, 38)', 'rgb(5, 150, 105)'],
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { size: 11 } } }
+                        },
+                        cutout: '65%',
+                    }
+                });
+            }
+
+            if (typeof Livewire !== 'undefined') {
+                Livewire.hook('morph.updated', () => {
+                    setTimeout(initCharts, 100);
+                });
+            }
+        </script>
+    @endif
 </div>

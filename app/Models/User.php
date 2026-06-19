@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -63,17 +65,17 @@ class User extends Authenticatable
 
     // ── Relationships ──
 
-    public function sekolah(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function sekolah(): HasOne
     {
         return $this->hasOne(Sekolah::class, 'id_users', 'id_users');
     }
 
-    public function kurir(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function kurir(): HasOne
     {
         return $this->hasOne(Kurir::class, 'id_users', 'id_users');
     }
 
-    public function ahliGizi(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function ahliGizi(): HasOne
     {
         return $this->hasOne(AhliGizi::class, 'id_users', 'id_users');
     }
@@ -85,7 +87,7 @@ class User extends Authenticatable
     }
 
     /** Menus targeted at this sekolah */
-    public function targetMenus(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    public function targetMenus(): HasManyThrough
     {
         return $this->hasManyThrough(
             Menu::class,

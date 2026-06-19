@@ -1,5 +1,5 @@
 @if($showModal && $selectedMenu)
-    <x-components.shared.modal show="showModal" title="🔍 Verifikasi Menu" maxWidth="560px">
+    <x-components.shared.modal show="showModal" title="Verifikasi Menu" maxWidth="560px">
         {{-- Menu Details --}}
         <div style="background: var(--color-surface); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.25rem;">
             <div style="font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.75rem;">Detail Menu</div>
@@ -39,14 +39,14 @@
             @if($showRejectInput)
                 <x-components.shared.button wire:click="closeModal" variant="secondary">Batal</x-components.shared.button>
                 <x-components.shared.button wire:click="reject" variant="danger">
-                    ❌ Konfirmasi Tolak
+                    Konfirmasi Tolak
                 </x-components.shared.button>
             @else
                 <x-components.shared.button wire:click="showRejectForm" variant="danger">
-                    ❌ Reject
+                    Reject
                 </x-components.shared.button>
                 <x-components.shared.button wire:click="approve" variant="primary">
-                    ✅ Approve
+                    Approve
                 </x-components.shared.button>
             @endif
         </x-slot>
