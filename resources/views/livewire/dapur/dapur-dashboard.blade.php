@@ -50,7 +50,4 @@
             </div>
         </div>
     </div>
-
-    {{-- Kirim Modal --}}
-    @include('Pages.01_DapurDashboard.TombolKirim')
 </div>

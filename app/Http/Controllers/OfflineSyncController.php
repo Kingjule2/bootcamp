@@ -23,7 +23,12 @@ class OfflineSyncController extends Controller
         try {
             foreach ($deliveries as $item) {
                 $pengirimanId = $item['pengiriman_id'];
-                $pengiriman = Pengiriman::find($pengirimanId);
+                $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
+                $pengiriman = Pengiriman::where('id_pengiriman', $pengirimanId)
+                    ->whereHas('menu', function ($q) use ($sekolahId) {
+                        $q->where('id_sekolah', $sekolahId);
+                    })
+                    ->first();
                 if (!$pengiriman) continue;
 
                 // 1. Receipt confirmation

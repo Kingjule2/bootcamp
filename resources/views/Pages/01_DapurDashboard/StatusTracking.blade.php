@@ -22,9 +22,7 @@
                 @endif
 
                 @if($menu->status === 'Ready to Cook' && !$menu->pengiriman)
-                    <x-components.shared.button wire:click="kirimMakanan({{ $menu->id_menus }})" variant="primary" style="font-size: 0.75rem; padding: 0.4rem 0.875rem;">
-                        🚚 KIRIM MAKANAN
-                    </x-components.shared.button>
+                    <span class="badge badge-approved">Menunggu Produksi</span>
                 @elseif($menu->pengiriman)
                     <span class="badge badge-{{ $menu->pengiriman->status_logistik === 'Diterima' ? 'received' : 'transit' }}">
                         {{ $menu->pengiriman->status_logistik }}
