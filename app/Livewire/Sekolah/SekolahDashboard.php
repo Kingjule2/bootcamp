@@ -3,6 +3,7 @@
 namespace App\Livewire\Sekolah;
 
 use App\Models\LaporanSekolah;
+use App\Models\Menu;
 use App\Models\Pengiriman;
 use Livewire\Component;
 
@@ -15,6 +16,7 @@ class SekolahDashboard extends Component
     public $selectedPengirimanId = null;
     public $showKonfirmasiForm = false;
     public $showLaporanForm = false;
+    public $activeTab = 'pengiriman'; // 'pengiriman' | 'menu_masuk'
 
     public function konfirmasiDiterima(int $pengirimanId)
     {
@@ -47,19 +49,19 @@ class SekolahDashboard extends Component
     {
         $this->validate([
             'porsi_diterima' => 'required|integer|min:0',
-            'food_waste' => 'required|integer|min:0',
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable|string|max:500',
+            'food_waste'     => 'required|integer|min:0',
+            'rating'         => 'required|integer|min:1|max:5',
+            'komentar'       => 'nullable|string|max:500',
         ], [
             'rating.min' => 'Silakan beri rating minimal 1 bintang.',
         ]);
 
         LaporanSekolah::create([
             'pengiriman_id' => $this->selectedPengirimanId,
-            'porsi_diterima' => $this->porsi_diterima,
-            'food_waste' => $this->food_waste,
-            'rating' => $this->rating,
-            'komentar' => $this->komentar,
+            'porsi_diterima'=> $this->porsi_diterima,
+            'food_waste'    => $this->food_waste,
+            'rating'        => $this->rating,
+            'komentar'      => $this->komentar,
         ]);
 
         $this->reset(['porsi_diterima', 'food_waste', 'rating', 'komentar', 'selectedPengirimanId', 'showLaporanForm']);
@@ -75,11 +77,20 @@ class SekolahDashboard extends Component
     {
         $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
 
+        // Active delivery tracking
         $pengiriman = Pengiriman::whereHas('menu', fn($q) => $q->where('id_sekolah', $sekolahId))
-            ->with(['menu.dapur', 'laporanSekolah'])
+            ->with(['menu.dapur', 'menu.sekolah', 'kurir.user', 'laporanSekolah'])
             ->latest()
             ->get();
 
-        return view('livewire.sekolah.sekolah-dashboard', compact('pengiriman'));
+        // Approved menus not yet dispatched — for transparency
+        $menuMasuk = Menu::where('id_sekolah', $sekolahId)
+            ->where('status', 'Ready to Cook')
+            ->whereDoesntHave('pengiriman')
+            ->with('dapur')
+            ->latest()
+            ->get();
+
+        return view('livewire.sekolah.sekolah-dashboard', compact('pengiriman', 'menuMasuk'));
     }
 }

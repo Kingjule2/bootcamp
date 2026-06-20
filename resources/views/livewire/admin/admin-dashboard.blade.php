@@ -1,4 +1,15 @@
 <div wire:poll.10s>
+    {{-- Flash Messages --}}
+    @if(session('success'))
+        <div style="background: #d1fae5; border: 1px solid #a7f3d0; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
+            <span style="font-size: 0.875rem; color: #065f46; font-weight: 500;">✅ {{ session('success') }}</span>
+        </div>
+    @endif
+    @if(session('error'))
+        <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 0.875rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease;">
+            <span style="font-size: 0.875rem; color: #991b1b; font-weight: 500;">⚠️ {{ session('error') }}</span>
+        </div>
+    @endif
     {{-- Modern Tab Switcher --}}
     <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #f1f5f9; padding: 0.375rem; border-radius: 0.75rem; width: max-content; border: 1px solid var(--color-border);">
         <button wire:click="switchTab('monitoring')" style="display: flex; align-items: center; gap: 0.5rem; background: {{ $activeTab === 'monitoring' ? 'white' : 'transparent' }}; color: {{ $activeTab === 'monitoring' ? 'var(--color-primary-700)' : 'var(--color-text-secondary)' }}; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; box-shadow: {{ $activeTab === 'monitoring' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none' }}; transition: all 0.2s;">
@@ -52,9 +63,29 @@
 
         {{-- Monitoring Table --}}
         <div class="card">
-            <div class="card-header">
-                <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">📡 Monitoring Pengiriman Real-Time</h3>
-                <span style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $stats['totalPengiriman'] }} total pengiriman</span>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">📡 Monitoring Pengiriman Real-Time</h3>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted);">{{ $stats['totalPengiriman'] }} total pengiriman</span>
+                </div>
+                
+                {{-- Filters & Actions --}}
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari menu, dapur, sekolah..." style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none; width: 220px;" />
+                    
+                    <select wire:model.live="filterStatus" style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none;">
+                        <option value="">Semua Status</option>
+                        <option value="Sedang Dimasak">Sedang Dimasak</option>
+                        <option value="Dalam Perjalanan">Dalam Perjalanan</option>
+                        <option value="Diterima">Diterima</option>
+                    </select>
+
+                    <input type="date" wire:model.live="filterDate" style="padding: 0.4rem 0.75rem; font-size: 0.8125rem; border: 1px solid var(--color-border); border-radius: 0.5rem; outline: none;" />
+
+                    <button wire:click="exportCSV" style="background: white; border: 1px solid var(--color-border); color: #16a34a; font-weight: 600; font-size: 0.8125rem; padding: 0.4rem 0.875rem; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                        📊 Export CSV
+                    </button>
+                </div>
             </div>
             <div class="card-body" style="padding: 0; overflow-x: auto;">
                 @if($allPengiriman->count() > 0)
@@ -93,7 +124,13 @@
                                         <div class="truncate-2" style="max-width: 180px; font-size: 0.8125rem;">{{ $p->menu?->nama_menu ?? '-' }}</div>
                                     </td>
                                     <td style="font-size: 0.8125rem;">{{ $p->menu?->targetSekolah?->nama_entitas ?? '-' }}</td>
-                                    <td style="font-size: 0.8125rem;">{{ $p->kurir?->user?->nama_entitas ?? '-' }}</td>
+                                    <td style="font-size: 0.8125rem;">
+                                        @if($p->kurir?->user)
+                                            {{ $p->kurir->user->nama_entitas }}
+                                        @else
+                                            <span style="color: var(--color-text-muted); font-style: italic;">Belum Ditentukan</span>
+                                        @endif
+                                    </td>
                                     <td style="font-size: 0.8125rem; color: var(--color-text-muted);">
                                         {{ $p->dispatched_at ? $p->dispatched_at->format('H:i') : '-' }}
                                     </td>
@@ -144,101 +181,5 @@
     {{-- User Modal Form --}}
     @include('Pages.04_AdminDashboard.ModalUserForm')
 
-    {{-- Chart.js Initialization --}}
-    @if($activeTab === 'monitoring')
-        <script>
-            document.addEventListener('livewire:init', () => {
-                initCharts();
-            });
 
-            document.addEventListener('livewire:navigated', () => {
-                initCharts();
-            });
-
-            function initCharts() {
-                const chartPorsiEl = document.getElementById('chartPorsi');
-                if (!chartPorsiEl) return;
-
-                const chartData = @json($chartData);
-
-                ['chartPorsi', 'chartRating', 'chartWaste'].forEach(id => {
-                    const existing = Chart.getChart(id);
-                    if (existing) existing.destroy();
-                });
-
-                new Chart(chartPorsiEl, {
-                    type: 'bar',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Porsi',
-                            data: chartData.porsi,
-                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                            borderColor: 'rgb(5, 150, 105)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
-                    }
-                });
-
-                new Chart(document.getElementById('chartRating'), {
-                    type: 'line',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Rating',
-                            data: chartData.rating,
-                            borderColor: 'rgb(245, 158, 11)',
-                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: 'rgb(245, 158, 11)',
-                            pointRadius: 4,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { min: 0, max: 5, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
-                    }
-                });
-
-                const totalWaste = chartData.waste.reduce((a, b) => a + b, 0);
-                const avgWaste = chartData.waste.length > 0 ? (totalWaste / chartData.waste.filter(v => v > 0).length || 0) : 0;
-                new Chart(document.getElementById('chartWaste'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Food Waste', 'Terkonsumsi'],
-                        datasets: [{
-                            data: [avgWaste.toFixed(1), (100 - avgWaste).toFixed(1)],
-                            backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(16, 185, 129, 0.6)'],
-                            borderColor: ['rgb(220, 38, 38)', 'rgb(5, 150, 105)'],
-                            borderWidth: 2,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { font: { size: 11 } } }
-                        },
-                        cutout: '65%',
-                    }
-                });
-            }
-
-            if (typeof Livewire !== 'undefined') {
-                Livewire.hook('morph.updated', () => {
-                    setTimeout(initCharts, 100);
-                });
-            }
-        </script>
-    @endif
 </div>

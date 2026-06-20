@@ -7,6 +7,8 @@ use Livewire\Component;
 
 class KurirDashboard extends Component
 {
+    public $activeTab = 'aktif'; // 'aktif' atau 'riwayat'
+
     public function tandaiDiterima(int $pengirimanId)
     {
         $kurirId = auth()->user()->kurir->id_kurir ?? null;
@@ -36,19 +38,27 @@ class KurirDashboard extends Component
         // Get deliveries assigned to this kurir
         $kurirId = auth()->user()->kurir->id_kurir ?? null;
 
-        $pengirimans = $kurirId
+        $pengirimanAktif = $kurirId
             ? Pengiriman::where('id_kurir', $kurirId)
-                ->whereIn('status_logistik', ['Dalam Perjalanan', 'Diterima'])
+                ->where('status_logistik', 'Dalam Perjalanan')
+                ->with(['menu.dapur', 'menu.targetSekolah'])
+                ->latest()
+                ->get()
+            : collect();
+
+        $riwayatSelesai = $kurirId
+            ? Pengiriman::where('id_kurir', $kurirId)
+                ->where('status_logistik', 'Diterima')
                 ->with(['menu.dapur', 'menu.targetSekolah'])
                 ->latest()
                 ->get()
             : collect();
 
         $stats = [
-            'dalam_perjalanan' => $pengirimans->where('status_logistik', 'Dalam Perjalanan')->count(),
-            'selesai_hari_ini' => $pengirimans->where('status_logistik', 'Diterima')->where('updated_at', '>=', today())->count(),
+            'dalam_perjalanan' => $pengirimanAktif->count(),
+            'selesai_hari_ini' => $riwayatSelesai->where('updated_at', '>=', today())->count(),
         ];
 
-        return view('livewire.kurir.kurir-dashboard', compact('pengirimans', 'stats'));
+        return view('livewire.kurir.kurir-dashboard', compact('pengirimanAktif', 'riwayatSelesai', 'stats'));
     }
 }

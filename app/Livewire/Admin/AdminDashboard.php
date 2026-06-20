@@ -17,6 +17,16 @@ class AdminDashboard extends Component
 {
     public $activeTab = 'monitoring'; // monitoring or user_management
 
+    // Filter & Search
+    #[Url]
+    public $search = '';
+    
+    #[Url]
+    public $filterStatus = '';
+    
+    #[Url]
+    public $filterDate = '';
+
     // User CRUD properties
     public $showUserModal = false;
     public $editingUserId = null;
@@ -145,7 +155,35 @@ class AdminDashboard extends Component
 
     public function deleteUser($userId)
     {
+        if ($userId === auth()->id()) {
+            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri!');
+            return;
+        }
+
         $user = \App\Models\User::findOrFail($userId);
+
+        // Cek menu aktif (Dapur)
+        $activeMenus = \App\Models\Menu::where('dapur_id', $userId)
+            ->whereIn('status', ['Pending Verification', 'Ready to Cook'])
+            ->count();
+
+        // Cek pengiriman aktif (Kurir)
+        $kurirProfile = \App\Models\Kurir::where('id_users', $userId)->first();
+        $activeDeliveries = $kurirProfile
+            ? \App\Models\Pengiriman::where('id_kurir', $kurirProfile->id_kurir)
+                ->where('status_logistik', 'Dalam Perjalanan')
+                ->count()
+            : 0;
+
+        if ($activeMenus > 0 || $activeDeliveries > 0) {
+            session()->flash('error',
+                "Tidak bisa menghapus user ini karena masih memiliki " .
+                ($activeMenus > 0 ? "{$activeMenus} menu aktif" : '') .
+                ($activeMenus > 0 && $activeDeliveries > 0 ? ' dan ' : '') .
+                ($activeDeliveries > 0 ? "{$activeDeliveries} pengiriman aktif" : '') . "."
+            );
+            return;
+        }
 
         // Delete profiles first
         \App\Models\Sekolah::where('id_users', $userId)->delete();
@@ -171,15 +209,77 @@ class AdminDashboard extends Component
         ]);
     }
 
+    public function exportCSV()
+    {
+        $query = Pengiriman::with(['menu.dapur', 'menu.targetSekolah', 'kurir.user', 'laporanSekolah']);
+
+        if ($this->search) {
+            $query->whereHas('menu', function ($q) {
+                $q->where('nama_menu', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('dapur', fn($q2) => $q2->where('nama_entitas', 'like', '%' . $this->search . '%'))
+                  ->orWhereHas('targetSekolah', fn($q3) => $q3->where('nama_entitas', 'like', '%' . $this->search . '%'));
+            });
+        }
+
+        if ($this->filterStatus) {
+            $query->where('status_logistik', $this->filterStatus);
+        }
+
+        if ($this->filterDate) {
+            $query->whereDate('created_at', $this->filterDate);
+        }
+
+        $pengiriman = $query->latest()->get();
+
+        $csvData = "ID Pengiriman,Status,Katering,Menu,Sekolah Tujuan,Kurir,Waktu Berangkat,Waktu Diterima,Porsi,Rating\n";
+
+        foreach ($pengiriman as $p) {
+            $csvData .= sprintf(
+                "%s,%s,\"%s\",\"%s\",\"%s\",\"%s\",%s,%s,%s,%s\n",
+                $p->id_pengiriman,
+                $p->status_logistik,
+                $p->menu->dapur->nama_entitas ?? '-',
+                str_replace('"', '""', $p->menu->nama_menu ?? '-'),
+                $p->menu->targetSekolah->nama_entitas ?? '-',
+                $p->kurir->user->nama_entitas ?? '-',
+                $p->dispatched_at ? $p->dispatched_at->format('Y-m-d H:i') : '-',
+                $p->received_at ? $p->received_at->format('Y-m-d H:i') : '-',
+                $p->menu->porsi_rencana,
+                $p->laporanSekolah->rating ?? '-'
+            );
+        }
+
+        return response()->streamDownload(function () use ($csvData) {
+            echo $csvData;
+        }, 'laporan_mbg_' . date('Y-m-d') . '.csv');
+    }
+
     public function render()
     {
         // All users for list
         $users = \App\Models\User::with(['sekolah', 'kurir', 'ahliGizi'])->latest()->get();
 
         // All pengiriman for monitoring table
-        $allPengiriman = Pengiriman::with(['menu.dapur', 'menu.targetSekolah', 'laporanSekolah'])
-            ->latest()
-            ->get();
+        // All pengiriman for monitoring table with filters
+        $query = Pengiriman::with(['menu.dapur', 'menu.targetSekolah', 'kurir.user', 'laporanSekolah']);
+
+        if ($this->search) {
+            $query->whereHas('menu', function ($q) {
+                $q->where('nama_menu', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('dapur', fn($q2) => $q2->where('nama_entitas', 'like', '%' . $this->search . '%'))
+                  ->orWhereHas('targetSekolah', fn($q3) => $q3->where('nama_entitas', 'like', '%' . $this->search . '%'));
+            });
+        }
+
+        if ($this->filterStatus) {
+            $query->where('status_logistik', $this->filterStatus);
+        }
+
+        if ($this->filterDate) {
+            $query->whereDate('created_at', $this->filterDate);
+        }
+
+        $allPengiriman = $query->latest()->get();
 
         // Overdue deliveries (> 2 hours in transit)
         $overdueCount = $allPengiriman->filter(fn($p) => $p->isOverdue())->count();

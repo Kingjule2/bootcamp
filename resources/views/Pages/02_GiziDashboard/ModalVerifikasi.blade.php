@@ -18,6 +18,14 @@
                     <div style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary-600);">{{ $selectedMenu->protein }} <span style="font-size: 0.75rem; font-weight: 400;">gram</span></div>
                 </div>
                 <div style="background: white; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--color-border);">
+                    <div style="font-size: 0.6875rem; color: var(--color-text-muted);">Karbohidrat</div>
+                    <div style="font-size: 1.125rem; font-weight: 700; color: #d97706;">{{ $selectedMenu->karbohidrat ?? '-' }} <span style="font-size: 0.75rem; font-weight: 400;">gram</span></div>
+                </div>
+                <div style="background: white; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--color-border);">
+                    <div style="font-size: 0.6875rem; color: var(--color-text-muted);">Lemak</div>
+                    <div style="font-size: 1.125rem; font-weight: 700; color: #ef4444;">{{ $selectedMenu->lemak ?? '-' }} <span style="font-size: 0.75rem; font-weight: 400;">gram</span></div>
+                </div>
+                <div style="background: white; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--color-border);">
                     <div style="font-size: 0.6875rem; color: var(--color-text-muted);">Jumlah Porsi</div>
                     <div style="font-size: 1.125rem; font-weight: 700;">{{ $selectedMenu->porsi_rencana }}</div>
                 </div>
