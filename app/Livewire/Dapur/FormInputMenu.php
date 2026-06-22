@@ -16,6 +16,10 @@ class FormInputMenu extends Component
     public $porsi_rencana = '';
     public $id_sekolah = '';
 
+    /**
+     * Menentukan aturan validasi untuk form input menu.
+     * Memastikan semua field diisi dengan benar sesuai batasan yang ditentukan.
+     */
     protected function rules()
     {
         return [
@@ -29,6 +33,10 @@ class FormInputMenu extends Component
         ];
     }
 
+    /**
+     * Menentukan pesan error kustom untuk setiap aturan validasi yang gagal.
+     * Memberikan informasi yang jelas kepada pengguna tentang kesalahan input.
+     */
     protected function messages()
     {
         return [
@@ -41,6 +49,11 @@ class FormInputMenu extends Component
         ];
     }
 
+    /**
+     * Menangani proses submit form input menu.
+     * Melakukan validasi input, menyimpan data menu baru ke database dengan status 'Pending Verification',
+     * mengosongkan form, dan memberikan pesan sukses.
+     */
     public function submit()
     {
         $this->validate();
@@ -64,6 +77,10 @@ class FormInputMenu extends Component
         $this->dispatch('menu-created');
     }
 
+    /**
+     * Menampilkan komponen form input menu.
+     * Mengambil daftar sekolah beserta data user terkait untuk pilihan sekolah tujuan.
+     */
     public function render()
     {
         $sekolahList = Sekolah::with('user')->get();

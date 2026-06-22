@@ -31,10 +31,10 @@
         @endif
 
         @if(auth()->user()->isSekolah())
-            <a href="{{ route('sekolah.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('sekolah.*') ? 'active' : '' }}">
+            <a href="{{ route('sekolah.dashboard') }}" class="sidebar-nav-item {{ request()->routeIs('sekolah.dashboard') ? 'active' : '' }}">
                 <span class="nav-icon"></span> Status Pengiriman
             </a>
-            <a href="{{ route('sekolah.dashboard') }}" class="sidebar-nav-item">
+            <a href="{{ route('sekolah.laporan') }}" class="sidebar-nav-item {{ request()->routeIs('sekolah.laporan') ? 'active' : '' }}">
                 <span class="nav-icon"></span> Laporan Harian
             </a>
         @endif

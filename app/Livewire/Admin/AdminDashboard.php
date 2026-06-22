@@ -47,11 +47,20 @@ class AdminDashboard extends Component
     public $no_str = '';
     public $spesialisasi = '';
 
+    /**
+     * Mengganti tab aktif pada tampilan dashboard (misal: monitoring atau user management).
+     *
+     * @param string $tab Nama tab yang akan diaktifkan
+     */
     public function switchTab($tab)
     {
         $this->activeTab = $tab;
     }
 
+    /**
+     * Membuka modal untuk menambahkan user baru.
+     * Mereset form dan memastikan mode bukan edit.
+     */
     public function openAddUser()
     {
         $this->resetForm();
@@ -59,6 +68,12 @@ class AdminDashboard extends Component
         $this->showUserModal = true;
     }
 
+    /**
+     * Membuka modal untuk mengedit data user yang sudah ada.
+     * Memuat data user beserta profil spesifiknya (Sekolah/Kurir/Ahli Gizi) ke dalam form.
+     *
+     * @param int $userId ID user yang akan diedit
+     */
     public function editUser($userId)
     {
         $this->resetForm();
@@ -86,6 +101,11 @@ class AdminDashboard extends Component
         $this->showUserModal = true;
     }
 
+    /**
+     * Menyimpan data user (baik untuk penambahan user baru maupun update user).
+     * Melakukan validasi data sesuai peran (role), mengenkripsi password (jika ada),
+     * menyimpan data ke tabel users, serta mensinkronisasi data profil spesifik.
+     */
     public function saveUser()
     {
         $rules = [
@@ -153,6 +173,13 @@ class AdminDashboard extends Component
         session()->flash('success', 'Data user berhasil disimpan!');
     }
 
+    /**
+     * Menghapus user dari sistem beserta data profil terkaitnya.
+     * Melakukan pengecekan terlebih dahulu agar tidak menghapus user yang masih memiliki tanggungan aktif
+     * (seperti menu aktif di dapur atau pengiriman aktif di kurir).
+     *
+     * @param int $userId ID user yang akan dihapus
+     */
     public function deleteUser($userId)
     {
         if ($userId === auth()->id()) {
@@ -194,12 +221,18 @@ class AdminDashboard extends Component
         session()->flash('success', 'User berhasil dihapus.');
     }
 
+    /**
+     * Menutup modal manajemen user dan mereset semua field pada form.
+     */
     public function closeUserModal()
     {
         $this->showUserModal = false;
         $this->resetForm();
     }
 
+    /**
+     * Mengosongkan dan mereset seluruh field form input user ke kondisi awal.
+     */
     private function resetForm()
     {
         $this->reset([
@@ -209,6 +242,11 @@ class AdminDashboard extends Component
         ]);
     }
 
+    /**
+     * Mengunduh data laporan pengiriman MBG dalam format CSV.
+     * Menerapkan filter pencarian, status, dan tanggal sebelum mengekspor data,
+     * serta memformat data ke dalam struktur CSV.
+     */
     public function exportCSV()
     {
         $query = Pengiriman::with(['menu.dapur', 'menu.targetSekolah', 'kurir.user', 'laporanSekolah']);
@@ -254,6 +292,12 @@ class AdminDashboard extends Component
         }, 'laporan_mbg_' . date('Y-m-d') . '.csv');
     }
 
+    /**
+     * Menampilkan komponen dashboard admin.
+     * Mengambil data seluruh pengguna, data pengiriman (dengan filter),
+     * menghitung berbagai metrik dan statistik (peringatan, overdue, waste, dll),
+     * serta menyiapkan data untuk ditampilkan pada chart/grafik.
+     */
     public function render()
     {
         // All users for list

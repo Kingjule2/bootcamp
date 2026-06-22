@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     // Panel 3: Sekolah & Driver (Kurir)
     Route::prefix('sekolah')->middleware('role:sekolah')->group(function () {
         Route::get('/', fn () => view('sekolah.dashboard'))->name('sekolah.dashboard');
+        Route::get('/laporan', fn () => view('sekolah.laporan'))->name('sekolah.laporan');
         Route::post('/sync-offline', [App\Http\Controllers\OfflineSyncController::class, 'syncOffline']);
     });
 

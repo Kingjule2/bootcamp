@@ -18,6 +18,13 @@ class SekolahDashboard extends Component
     public $showLaporanForm = false;
     public $activeTab = 'pengiriman'; // 'pengiriman' | 'menu_masuk'
 
+    /**
+     * Mengkonfirmasi bahwa makanan telah diterima oleh sekolah.
+     * Mengubah status pengiriman menjadi 'Diterima', membebaskan tugas kurir,
+     * dan menampilkan form laporan kualitas makanan untuk diisi oleh sekolah.
+     *
+     * @param int $pengirimanId ID pengiriman yang dikonfirmasi
+     */
     public function konfirmasiDiterima(int $pengirimanId)
     {
         $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;
@@ -45,6 +52,10 @@ class SekolahDashboard extends Component
         session()->flash('success', '✅ Penerimaan dikonfirmasi! Silakan isi laporan kualitas.');
     }
 
+    /**
+     * Menyimpan laporan kualitas makanan (jumlah porsi, food waste, rating, dan komentar).
+     * Melakukan validasi input, menyimpan data laporan ke database, dan mereset form laporan.
+     */
     public function submitLaporan()
     {
         $this->validate([
@@ -68,11 +79,21 @@ class SekolahDashboard extends Component
         session()->flash('success', '📝 Laporan kualitas berhasil dikirim. Terima kasih!');
     }
 
+    /**
+     * Mengatur nilai rating (bintang) pada form laporan kualitas makanan.
+     *
+     * @param int $value Nilai rating yang dipilih (1-5)
+     */
     public function setRating(int $value)
     {
         $this->rating = $value;
     }
 
+    /**
+     * Menampilkan komponen dashboard sekolah.
+     * Mengambil data pengiriman aktif menuju sekolah ini dan daftar menu masuk
+     * yang sudah disetujui tapi belum dikirim.
+     */
     public function render()
     {
         $sekolahId = auth()->user()->sekolah->id_sekolah ?? null;

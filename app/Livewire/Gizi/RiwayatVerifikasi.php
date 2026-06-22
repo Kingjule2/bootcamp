@@ -7,6 +7,10 @@ use Livewire\Component;
 
 class RiwayatVerifikasi extends Component
 {
+    /**
+     * Menampilkan komponen riwayat verifikasi menu.
+     * Mengambil daftar menu yang sudah diproses (disetujui atau ditolak) beserta relasinya.
+     */
     public function render()
     {
         $riwayat = Menu::whereIn('status', ['Ready to Cook', 'Rejected'])

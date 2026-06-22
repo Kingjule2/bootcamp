@@ -11,6 +11,12 @@ class DapurDashboard extends Component
 {
 
 
+    /**
+     * Menampilkan halaman dashboard Dapur.
+     * Mengambil data menu yang dibuat oleh dapur saat ini beserta relasinya (sekolah target dan pengiriman).
+     * Menghitung statistik jumlah menu berdasarkan statusnya (total, pending, disetujui, ditolak).
+     * Mengambil daftar kurir untuk keperluan pengiriman.
+     */
     public function render()
     {
         $menus = Menu::where('dapur_id', auth()->id())
